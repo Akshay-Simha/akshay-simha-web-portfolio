@@ -937,13 +937,6 @@ export default function App() {
       </main>
 
       {/* Floating Meta Details (Scrollable elements might need more space) skipped as requested */}
-
-      <div className="fixed left-6 bottom-12 z-50 hidden xl:flex flex-col gap-8">
-        <div className="writing-vertical-lr text-[10px] font-mono uppercase tracking-[0.4em] text-brand-muted opacity-40">
-          PROVISIONING COMPUTE // NODE_V20 // AWS_US_EAST_1
-        </div>
-        <div className="w-[1px] h-24 bg-brand-border mx-auto" />
-      </div>
     </div>
   );
 }
