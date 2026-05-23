@@ -1,12 +1,12 @@
 import { motion, AnimatePresence } from "motion/react";
-import { 
-  Cloud, 
-  Terminal, 
+import {
+  Cloud,
+  Terminal,
   ArrowRight,
-  Github, 
-  Linkedin, 
-  Mail, 
-  ExternalLink, 
+  Github,
+  Linkedin,
+  Mail,
+  ExternalLink,
   ChevronRight,
   Database,
   Shield,
@@ -31,7 +31,7 @@ import {
 import { useState, useEffect } from "react";
 
 const RESUME_DATA = {
-  name: "Akshay Simha S", 
+  name: "Akshay Simha S",
   role: "DevOps Engineer",
   location: "Bengaluru, India",
   summary: "DevOps Engineer with 1+ years of hands-on experience in automating AWS infrastructure using Terraform, building CI/CD pipelines with GitHub Actions, and implementing monitoring using Prometheus and Grafana. Proven ability to reduce operational overhead and cloud costs, strengthen cloud security through IAM best practices and SSO, and improving system reliability through observability and standardized DevOps processes.",
@@ -148,7 +148,7 @@ const Header = ({ activeTab, setActiveTab, isMenuOpen, setIsMenuOpen }: { active
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isMenuOpen ? "bg-white" : "bg-white/80 backdrop-blur-md"} border-b border-brand-border/30`}>
       <nav className="flex justify-between items-center max-w-7xl mx-auto px-6 h-16 w-full relative">
-        <button 
+        <button
           onClick={() => {
             setActiveTab("Home");
             setIsMenuOpen(false);
@@ -164,11 +164,10 @@ const Header = ({ activeTab, setActiveTab, isMenuOpen, setIsMenuOpen }: { active
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`font-mono text-[11px] uppercase tracking-widest transition-all duration-200 border-b-2 pb-1 ${
-                activeTab === tab 
-                  ? "text-brand-accent font-bold border-brand-accent" 
+              className={`font-mono text-[11px] uppercase tracking-widest transition-all duration-200 border-b-2 pb-1 ${activeTab === tab
+                  ? "text-brand-accent font-bold border-brand-accent"
                   : "text-brand-muted border-transparent hover:text-brand-accent"
-              }`}
+                }`}
             >
               {tab}
             </button>
@@ -176,7 +175,7 @@ const Header = ({ activeTab, setActiveTab, isMenuOpen, setIsMenuOpen }: { active
         </div>
 
         {/* Mobile menu button */}
-        <button 
+        <button
           className="md:hidden z-50 p-2 text-brand-primary h-10 w-10 flex flex-col items-center justify-center gap-1.5"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle menu"
@@ -198,7 +197,7 @@ const Header = ({ activeTab, setActiveTab, isMenuOpen, setIsMenuOpen }: { active
 
 const MobileMenu = ({ isOpen, activeTab, setActiveTab, onClose }: { isOpen: boolean, activeTab: string, setActiveTab: (t: string) => void, onClose: () => void }) => {
   const tabs = ["Home", "About", "Experience", "Skills", "Projects", "Certifications", "Contact"];
-  
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -220,15 +219,14 @@ const MobileMenu = ({ isOpen, activeTab, setActiveTab, onClose }: { isOpen: bool
                   setActiveTab(tab);
                   onClose();
                 }}
-                className={`font-display text-4xl font-bold tracking-tighter transition-colors text-left w-full ${
-                  activeTab === tab ? "text-brand-accent" : "text-brand-primary hover:text-brand-accent"
-                }`}
+                className={`font-display text-4xl font-bold tracking-tighter transition-colors text-left w-full ${activeTab === tab ? "text-brand-accent" : "text-brand-primary hover:text-brand-accent"
+                  }`}
               >
                 {tab}
               </motion.button>
             ))}
           </div>
-          
+
           <div className="mt-auto py-12 border-t border-brand-border/30 space-y-6">
             <div className="flex gap-6">
               <a href="https://www.linkedin.com/in/akshaysimha-70b369210/" target="_blank" rel="noopener noreferrer" className="text-brand-muted hover:text-brand-accent transition-colors"><Linkedin size={24} /></a>
@@ -249,28 +247,28 @@ const HomeTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
           <span className="w-2 h-2 bg-brand-accent rounded-full animate-pulse"></span>
           <span className="font-mono text-[10px] text-brand-accent uppercase tracking-widest font-medium">System Status: Optimal</span>
         </div>
-        
+
         <h1 className="font-display text-6xl lg:text-8xl text-brand-primary leading-[1.1] tracking-tighter font-bold">
           Akshay Simha S
         </h1>
-        
+
         <h2 className="font-display text-xl text-brand-accent bg-brand-primary-container px-4 py-2 inline-block rounded-lg font-semibold">
           DevOps Engineer
         </h2>
-        
+
         <p className="font-sans text-lg text-brand-muted max-w-xl leading-relaxed">
           Architecting resilient infrastructure through <span className="text-brand-primary font-bold">Cloud-Native</span> solutions. Specialized in end-to-end automation, scalable <span className="text-brand-primary font-bold">CI/CD</span> pipelines, and infrastructure-as-code orchestration.
         </p>
-        
+
         <div className="flex flex-wrap gap-4 pt-4">
-          <button 
+          <button
             onClick={() => setActiveTab("About")}
             className="bg-brand-primary-container text-white px-8 py-3 rounded shadow-sm hover:bg-brand-accent transition-all duration-300 font-mono text-[11px] uppercase tracking-wider flex items-center gap-2 group"
           >
             <span>About</span>
             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
           </button>
-          <button 
+          <button
             onClick={() => setActiveTab("Contact")}
             className="border border-brand-border text-brand-muted px-8 py-3 rounded font-mono text-[11px] uppercase tracking-wider hover:bg-slate-50 transition-all duration-300"
           >
@@ -278,7 +276,7 @@ const HomeTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
           </button>
         </div>
       </div>
-      
+
       <div className="w-full md:w-2/5 flex justify-center">
         <div className="relative w-72 h-72 md:w-96 md:h-96">
           <div className="absolute inset-0 border-2 border-dashed border-brand-accent/30 rounded-full animate-[spin_20s_linear_infinite]"></div>
@@ -290,14 +288,14 @@ const HomeTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
               transition={{ duration: 0.8 }}
               className="w-full h-full"
             >
-              <img 
-                alt="Akshay Simha S" 
-                className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-700 shadow-xl border-4 border-white" 
+              <img
+                alt="Akshay Simha S"
+                className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-700 shadow-xl border-4 border-white"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSxKzecrVwLHXn56nGnhTrFzJtisCSPcm8otqrb44plBIpdn6keFLBWRR1rU_SV5DNdgM4oAqbdLssKY9pHV0zXDgMKzMLKCNGDPiEK6vBJLX26GE0hq_d4-Gi5gie4XWaDeapIOwXbcDx2DeLMQgHji5Ixv3Sn3Zk4-KXtxuxqOByojBMjXaIXMiqMs-H8BUn1arIcBtzaufChAKdt5q6rBjjqzFiEOQlptL4aXF07HW9zPmuSOUH2sp3_AVdYN4f9UlEO-mymYN0"
               />
             </motion.div>
           </div>
-          
+
           {/* Floating Asset */}
           <div className="absolute top-4 right-0 bg-white shadow-lg p-2 rounded-lg border border-brand-border flex items-center gap-2 animate-bounce">
             <Cloud className="text-brand-accent" size={16} fill="currentColor" fillOpacity={0.1} />
@@ -313,7 +311,7 @@ const HomeTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
         <h2 className="font-display text-4xl font-bold text-brand-primary tracking-tight mb-4">Technical Expertise</h2>
         <p className="text-brand-muted text-lg">Standardized tools and practices for growth-oriented environments.</p>
       </div>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Cloud Architecture Card */}
         <div className="glass-card p-10 bg-white border border-brand-border/30 rounded-3xl relative group hover:border-brand-accent transition-all">
@@ -398,13 +396,13 @@ const ProjectsTab = () => (
         </h2>
       </div>
       <div className="flex gap-2">
-        <button className="p-3 border border-brand-border rounded-full hover:bg-slate-50 transition-colors"><ChevronRight className="rotate-180" size={20}/></button>
-        <button className="p-3 border border-brand-border rounded-full hover:bg-slate-50 transition-colors"><ChevronRight size={20}/></button>
+        <button className="p-3 border border-brand-border rounded-full hover:bg-slate-50 transition-colors"><ChevronRight className="rotate-180" size={20} /></button>
+        <button className="p-3 border border-brand-border rounded-full hover:bg-slate-50 transition-colors"><ChevronRight size={20} /></button>
       </div>
     </div>
     <div className="space-y-24">
       {RESUME_DATA.projects.map((project, i) => (
-        <motion.div 
+        <motion.div
           key={project.title}
           className={`grid grid-cols-1 lg:grid-cols-12 gap-12 items-center ${i % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
         >
@@ -424,7 +422,7 @@ const ProjectsTab = () => (
             <p className="text-brand-muted text-lg leading-relaxed mb-8">{project.description}</p>
             <div className="flex items-center gap-4 py-6 border-y border-brand-border">
               <div className="flex -space-x-2">
-                {[1,2,3].map(u => <div key={u} className="w-8 h-8 rounded-full border-2 border-white bg-slate-200" />)}
+                {[1, 2, 3].map(u => <div key={u} className="w-8 h-8 rounded-full border-2 border-white bg-slate-200" />)}
               </div>
               <span className="text-xs text-brand-muted font-mono uppercase">Managed by {RESUME_DATA.name}</span>
             </div>
@@ -443,7 +441,7 @@ const ExperienceTab = () => (
         Professional Experience
       </h2>
     </div>
-    
+
     <div className="space-y-12">
       {RESUME_DATA.experience.map((exp, i) => (
         <motion.div
@@ -456,7 +454,7 @@ const ExperienceTab = () => (
           <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none">
             <Layers size={180} />
           </div>
-          
+
           <div className="flex flex-col lg:flex-row justify-between items-start gap-8 relative z-10">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
@@ -526,7 +524,7 @@ const CertificationsTab = () => (
     </div>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {RESUME_DATA.certifications.map((cert, i) => (
-        <motion.a 
+        <motion.a
           key={cert.title}
           href={cert.link}
           target="_blank"
@@ -583,7 +581,7 @@ const ContactTab = () => (
     {/* Primary Cards */}
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       {/* Professional Network */}
-      <a 
+      <a
         href="https://www.linkedin.com/in/akshaysimha-70b369210/"
         target="_blank"
         rel="noopener noreferrer"
@@ -605,7 +603,7 @@ const ContactTab = () => (
       </a>
 
       {/* Direct Inquiry */}
-      <a 
+      <a
         href="mailto:simhaa.31@gmail.com"
         className="glass-card p-10 bg-white border border-brand-border/30 rounded-[2rem] relative group hover:border-brand-accent transition-all block"
       >
@@ -641,11 +639,11 @@ const ContactTab = () => (
             <p className="font-mono text-sm">Q3-Q4: Limited Capacity</p>
           </div>
           <div className="space-y-3">
-             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5adace] block">PREFERRED TOOLS</span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5adace] block">PREFERRED TOOLS</span>
             <p className="font-mono text-sm">Slack, Discord, Zoom</p>
           </div>
           <div className="space-y-3">
-             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5adace] block">TIMEZONE</span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5adace] block">TIMEZONE</span>
             <p className="font-mono text-sm">Indian Standard Time (UTC+5:30)</p>
           </div>
         </div>
@@ -717,8 +715,8 @@ const AnimatedTerminal = () => {
             {line || "\u00A0"}
           </div>
         ))}
-        <motion.span 
-          animate={{ opacity: [0, 1] }} 
+        <motion.span
+          animate={{ opacity: [0, 1] }}
           transition={{ repeat: Infinity, duration: 0.8 }}
           className="inline-block w-1.5 h-3 bg-brand-accent ml-1"
         />
@@ -764,11 +762,10 @@ const AboutTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className={`p-10 rounded-2xl text-left transition-all border ${
-              item.highlighted 
-                ? "bg-brand-primary-container text-white border-transparent shadow-2xl scale-105 z-10" 
+            className={`p-10 rounded-2xl text-left transition-all border ${item.highlighted
+                ? "bg-brand-primary-container text-white border-transparent shadow-2xl scale-105 z-10"
                 : "bg-white text-brand-text border-brand-border/50 hover:border-brand-accent shadow-sm"
-            }`}
+              }`}
           >
             <item.icon size={28} className={`mb-6 ${item.highlighted ? "text-brand-accent" : "text-brand-accent"}`} />
             <h3 className="font-display text-xl font-bold mb-4">{item.title}</h3>
@@ -786,11 +783,11 @@ const AboutTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
         <span className="font-mono text-brand-accent text-xs tracking-[0.4em] mb-4 block">git log --oneline</span>
         <h2 className="font-display text-4xl md:text-5xl font-bold text-brand-primary tracking-tighter">Career Trajectory</h2>
       </div>
-      
+
       <div className="space-y-16 relative">
         {/* Timeline Line */}
         <div className="absolute left-[19px] lg:left-1/2 top-4 bottom-4 w-[1px] bg-brand-border/50 lg:-translate-x-1/2" />
-        
+
         {RESUME_DATA.trajectory.map((job, i) => (
           <div key={job.role} className={`relative flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10 md:gap-12 ${i % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
             {/* Dot/Icon */}
@@ -853,14 +850,16 @@ const AboutTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
     <div className="max-w-3xl mx-auto text-center py-20">
       <h2 className="font-display text-4xl font-bold text-brand-primary mb-10 tracking-tight">Let's connect.</h2>
       <div className="flex justify-center gap-4">
-        <button 
+        <button
           onClick={() => setActiveTab("Contact")}
           className="bg-brand-primary-container text-white px-8 py-4 rounded font-mono text-xs uppercase tracking-widest hover:bg-brand-accent transition-all shadow-xl"
         >
           Contact
         </button>
         <button className="border border-brand-border text-brand-primary px-8 py-4 rounded font-mono text-xs uppercase tracking-widest hover:bg-slate-50 transition-all">
-          Download Resume
+          <a href="/Akshay_Simha_S_Resume.pdf" download>
+            Download Resume
+          </a>
         </button>
       </div>
     </div>
@@ -907,19 +906,19 @@ export default function App() {
     <div className="min-h-screen bg-brand-bg relative overflow-x-hidden pt-32 pb-24 selection:bg-brand-accent selection:text-white">
       {/* Background Grid */}
       <div className="fixed inset-0 technical-grid opacity-30 pointer-events-none" />
-      
-      <Header 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
-        isMenuOpen={isMenuOpen} 
-        setIsMenuOpen={setIsMenuOpen} 
+
+      <Header
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        isMenuOpen={isMenuOpen}
+        setIsMenuOpen={setIsMenuOpen}
       />
 
-      <MobileMenu 
-        isOpen={isMenuOpen} 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
-        onClose={() => setIsMenuOpen(false)} 
+      <MobileMenu
+        isOpen={isMenuOpen}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onClose={() => setIsMenuOpen(false)}
       />
 
       <main className="max-w-7xl mx-auto px-6 relative z-10">
