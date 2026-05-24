@@ -291,7 +291,7 @@ const HomeTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
               <img
                 alt="Akshay Simha S"
                 className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-700 shadow-xl border-4 border-white"
-                src="/Akshay_Simha_S_Photo.jpeg"
+                src="/Akshay_Simha_S_Photo.jpg"
               />
             </motion.div>
           </div>
