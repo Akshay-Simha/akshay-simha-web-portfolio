@@ -165,8 +165,8 @@ const Header = ({ activeTab, setActiveTab, isMenuOpen, setIsMenuOpen }: { active
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`font-mono text-[11px] uppercase tracking-widest transition-all duration-200 border-b-2 pb-1 ${activeTab === tab
-                  ? "text-brand-accent font-bold border-brand-accent"
-                  : "text-brand-muted border-transparent hover:text-brand-accent"
+                ? "text-brand-accent font-bold border-brand-accent"
+                : "text-brand-muted border-transparent hover:text-brand-accent"
                 }`}
             >
               {tab}
@@ -291,7 +291,7 @@ const HomeTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
               <img
                 alt="Akshay Simha S"
                 className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-700 shadow-xl border-4 border-white"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSxKzecrVwLHXn56nGnhTrFzJtisCSPcm8otqrb44plBIpdn6keFLBWRR1rU_SV5DNdgM4oAqbdLssKY9pHV0zXDgMKzMLKCNGDPiEK6vBJLX26GE0hq_d4-Gi5gie4XWaDeapIOwXbcDx2DeLMQgHji5Ixv3Sn3Zk4-KXtxuxqOByojBMjXaIXMiqMs-H8BUn1arIcBtzaufChAKdt5q6rBjjqzFiEOQlptL4aXF07HW9zPmuSOUH2sp3_AVdYN4f9UlEO-mymYN0"
+                src="/Akshay_Simha_S_Photo.jpeg"
               />
             </motion.div>
           </div>
@@ -763,8 +763,8 @@ const AboutTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
             className={`p-10 rounded-2xl text-left transition-all border ${item.highlighted
-                ? "bg-brand-primary-container text-white border-transparent shadow-2xl scale-105 z-10"
-                : "bg-white text-brand-text border-brand-border/50 hover:border-brand-accent shadow-sm"
+              ? "bg-brand-primary-container text-white border-transparent shadow-2xl scale-105 z-10"
+              : "bg-white text-brand-text border-brand-border/50 hover:border-brand-accent shadow-sm"
               }`}
           >
             <item.icon size={28} className={`mb-6 ${item.highlighted ? "text-brand-accent" : "text-brand-accent"}`} />
@@ -856,11 +856,12 @@ const AboutTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
         >
           Contact
         </button>
-        <button className="border border-brand-border text-brand-primary px-8 py-4 rounded font-mono text-xs uppercase tracking-widest hover:bg-slate-50 transition-all">
-          <a href="/Akshay_Simha_S_Resume.pdf" download>
-            Download Resume
-          </a>
-        </button>
+        <a
+          href="/Akshay_Simha_S_Resume.pdf" download
+          className="border border-brand-border text-brand-primary px-8 py-4 rounded font-mono text-xs uppercase tracking-widest hover:bg-slate-50 transition-all"
+        >
+          Download Resume
+        </a>
       </div>
     </div>
   </div>
