@@ -28,7 +28,11 @@ import {
   Rocket,
   GitBranch,
   Share2,
-  ArrowUpRight
+  ArrowUpRight,
+  X,
+  Copy,
+  Check,
+  MessageSquare
 } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
 
@@ -865,125 +869,248 @@ const CertificationsTab = () => (
   </div>
 );
 
-const ContactTab = () => (
-  <div className="max-w-6xl mx-auto space-y-24 py-12">
-    {/* Header */}
-    <motion.div
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
-      variants={headingContainerVariants}
-      className="text-center"
-    >
-      <motion.span variants={headingItemVariants} className="font-mono text-brand-accent text-xs tracking-[0.4em] mb-4 block uppercase font-bold">--STATUS: LISTENING</motion.span>
-      <motion.h2 variants={headingItemVariants} className="font-display text-6xl font-bold text-brand-primary tracking-tighter mb-6">Direct Connect</motion.h2>
-      <motion.p variants={headingItemVariants} className="text-brand-muted text-lg max-w-2xl mx-auto leading-relaxed">
-        Skip the forms. I prefer direct communication for discussing architectural challenges, infrastructure scaling, or consulting opportunities.
-      </motion.p>
-    </motion.div>
+const ContactTab = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [copiedText, setCopiedText] = useState(false);
 
-    {/* Primary Cards */}
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      {/* Professional Network */}
-      <a 
-        href="https://www.linkedin.com/in/akshaysimha-70b369210/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="glass-card p-10 bg-white border border-brand-border/30 rounded-[2rem] relative group hover:border-brand-accent transition-all block"
-      >
-        <div className="flex justify-between items-start mb-8">
-          <div className="w-12 h-12 bg-[#1a365d] rounded-xl flex items-center justify-center text-white">
-            <Linkedin size={24} />
-          </div>
-          <ArrowUpRight size={20} className="text-brand-muted group-hover:text-brand-accent transition-colors" />
-        </div>
-        <h3 className="font-display text-2xl font-bold text-brand-primary mb-4">LinkedIn</h3>
-        <p className="text-brand-muted mb-8 leading-relaxed">
-          Connect for professional networking, explore my career journey, and stay updated with my latest technical insights and industry contributions.
-        </p>
-        <div className="pt-6 border-t border-brand-border/30">
-          <span className="font-mono text-[10px] uppercase tracking-widest font-bold text-brand-accent">LINKEDIN: akshaysimha</span>
-        </div>
-      </a>
+  const linkedinUrl = "https://www.linkedin.com/in/akshaysimha-70b369210/";
+  const emailAddress = "simhaa.31@gmail.com";
+  const emailSubject = "Discussion: DevOps Opportunities";
+  const prewrittenMessage = `Hi Akshay,
 
-      {/* Direct Inquiry */}
-      <a 
-        href="mailto:simhaa.31@gmail.com"
-        className="glass-card p-10 bg-white border border-brand-border/30 rounded-[2rem] relative group hover:border-brand-accent transition-all block"
-      >
-        <div className="flex justify-between items-start mb-8">
-          <div className="w-12 h-12 bg-[#1a365d] rounded-xl flex items-center justify-center text-white">
-            <Mail size={24} />
-          </div>
-          <ArrowUpRight size={20} className="text-brand-muted group-hover:text-brand-accent transition-colors" />
-        </div>
-        <h3 className="font-display text-2xl font-bold text-brand-primary mb-4">Gmail</h3>
-        <p className="text-brand-muted mb-8 leading-relaxed">
-          Reach out directly for project collaborations, technical consultations, or professional inquiries. I typically respond to architectural proposals within 24 hours.
-        </p>
-        <div className="pt-6 border-t border-brand-border/30">
-          <span className="font-mono text-[10px] uppercase tracking-widest font-bold text-brand-accent">GMAIL: simhaa.31@gmail.com</span>
-        </div>
-      </a>
-    </div>
+I recently reviewed your portfolio. I am reaching out to discuss potential opportunities within our organization. Let's schedule a brief chat to discuss these opportunities.
 
-    {/* Info Terminal Card */}
-    <div className="max-w-4xl mx-auto w-full">
-      <div className="terminal-card p-10 relative overflow-hidden group">
-        <div className="flex items-center gap-2 mb-8">
-          <div className="w-3 h-3 rounded-full bg-red-500" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500" />
-          <div className="w-3 h-3 rounded-full bg-green-500" />
-          <span className="font-mono text-[10px] text-white/40 ml-4">root@portfolio:~/profile.yaml</span>
-        </div>
-        <div className="font-mono text-sm space-y-2">
-          <div className="text-brand-accent">engineer:</div>
-          <div className="pl-4">
-            <span className="text-white/60">name:</span> <span className="text-[#5adace]">"{RESUME_DATA.name}"</span>
-          </div>
-          <div className="pl-4">
-            <span className="text-white/60">role:</span> <span className="text-[#5adace]">"DevOps Engineer"</span>
-          </div>
-          <div className="text-brand-accent">focuses:</div>
-          <ul className="pl-8 text-white/80 list-none space-y-1">
-            <li>- Cloud infrastructure</li>
-            <li>- Cloud security</li>
-            <li>- Monitoring and observability</li>
-          </ul>
-        </div>
-        <Cloud size={200} className="absolute -right-20 -bottom-20 text-white opacity-[0.03] group-hover:scale-110 transition-transform" />
-      </div>
-    </div>
+Best regards,
+[Your Name]`;
 
+  const mailtoUrl = `mailto:${emailAddress}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(prewrittenMessage)}`;
 
+  const handleCopyMessage = () => {
+    navigator.clipboard.writeText(prewrittenMessage);
+    setCopiedText(true);
+    setTimeout(() => setCopiedText(false), 2000);
+  };
 
-    {/* Footer CTA */}
-    <div className="max-w-3xl mx-auto text-center pt-20 pb-8">
+  return (
+    <div className="max-w-6xl mx-auto space-y-24 py-12">
+      {/* Header */}
       <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={headingContainerVariants}
+        className="text-center"
       >
-        <motion.h2 variants={headingItemVariants} className="font-display text-4xl font-bold text-brand-primary mb-10 tracking-tight">Let's connect.</motion.h2>
+        <motion.span variants={headingItemVariants} className="font-mono text-brand-accent text-xs tracking-[0.4em] mb-4 block uppercase font-bold">--STATUS: LISTENING</motion.span>
+        <motion.h2 variants={headingItemVariants} className="font-display text-6xl font-bold text-brand-primary tracking-tighter mb-6">Direct Connect</motion.h2>
+        <motion.p variants={headingItemVariants} className="text-brand-muted text-lg max-w-2xl mx-auto leading-relaxed">
+          Skip the forms. I prefer direct communication for discussing architectural challenges, infrastructure scaling, or consulting opportunities.
+        </motion.p>
       </motion.div>
-      <div className="flex justify-center gap-4">
+
+      {/* Primary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Professional Network */}
         <a 
-          href="#" 
-          className="bg-brand-primary-container text-white px-8 py-4 rounded font-mono text-xs uppercase tracking-widest hover:bg-brand-accent transition-all shadow-xl inline-flex items-center justify-center font-bold"
+          href="https://www.linkedin.com/in/akshaysimha-70b369210/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="glass-card p-10 bg-white border border-brand-border/30 rounded-[2rem] relative group hover:border-brand-accent transition-all block"
         >
-          Download Resume
+          <div className="flex justify-between items-start mb-8">
+            <div className="w-12 h-12 bg-[#1a365d] rounded-xl flex items-center justify-center text-white">
+              <Linkedin size={24} />
+            </div>
+            <ArrowUpRight size={20} className="text-brand-muted group-hover:text-brand-accent transition-colors" />
+          </div>
+          <h3 className="font-display text-2xl font-bold text-brand-primary mb-4">LinkedIn</h3>
+          <p className="text-brand-muted mb-8 leading-relaxed">
+            Connect for professional networking, explore my career journey, and stay updated with my latest technical insights and industry contributions.
+          </p>
+          <div className="pt-6 border-t border-brand-border/30">
+            <span className="font-mono text-[10px] uppercase tracking-widest font-bold text-brand-accent">LINKEDIN: akshaysimha</span>
+          </div>
         </a>
+
+        {/* Direct Inquiry */}
         <a 
-          href="mailto:simhaa.31@gmail.com?subject=Schedule%20a%20DevOps%20Consultation"
-          className="border border-brand-border text-brand-primary px-8 py-4 rounded font-mono text-xs uppercase tracking-widest hover:bg-slate-50 transition-all inline-flex items-center justify-center font-bold"
+          href={mailtoUrl}
+          className="glass-card p-10 bg-white border border-brand-border/30 rounded-[2rem] relative group hover:border-brand-accent transition-all block"
         >
-          Schedule Consultation
+          <div className="flex justify-between items-start mb-8">
+            <div className="w-12 h-12 bg-[#1a365d] rounded-xl flex items-center justify-center text-white">
+              <Mail size={24} />
+            </div>
+            <ArrowUpRight size={20} className="text-brand-muted group-hover:text-brand-accent transition-colors" />
+          </div>
+          <h3 className="font-display text-2xl font-bold text-brand-primary mb-4">Gmail</h3>
+          <p className="text-brand-muted mb-8 leading-relaxed">
+            Reach out directly for project collaborations, technical consultations, or professional inquiries. I typically respond to architectural proposals within 24 hours.
+          </p>
+          <div className="pt-6 border-t border-brand-border/30">
+            <span className="font-mono text-[10px] uppercase tracking-widest font-bold text-brand-accent">GMAIL: simhaa.31@gmail.com</span>
+          </div>
         </a>
       </div>
+
+      {/* Info Terminal Card */}
+      <div className="max-w-4xl mx-auto w-full">
+        <div className="terminal-card p-10 relative overflow-hidden group">
+          <div className="flex items-center gap-2 mb-8">
+            <div className="w-3 h-3 rounded-full bg-red-500" />
+            <div className="w-3 h-3 rounded-full bg-yellow-500" />
+            <div className="w-3 h-3 rounded-full bg-green-500" />
+            <span className="font-mono text-[10px] text-white/40 ml-4">root@portfolio:~/profile.yaml</span>
+          </div>
+          <div className="font-mono text-sm space-y-2">
+            <div className="text-brand-accent">engineer:</div>
+            <div className="pl-4">
+              <span className="text-white/60">name:</span> <span className="text-[#5adace]">"{RESUME_DATA.name}"</span>
+            </div>
+            <div className="pl-4">
+              <span className="text-white/60">role:</span> <span className="text-[#5adace]">"DevOps Engineer"</span>
+            </div>
+            <div className="text-brand-accent">focuses:</div>
+            <ul className="pl-8 text-white/80 list-none space-y-1">
+              <li>- Cloud infrastructure</li>
+              <li>- Cloud security</li>
+              <li>- Monitoring and observability</li>
+            </ul>
+          </div>
+          <Cloud size={200} className="absolute -right-20 -bottom-20 text-white opacity-[0.03] group-hover:scale-110 transition-transform" />
+        </div>
+      </div>
+
+      {/* Footer CTA */}
+      <div className="max-w-3xl mx-auto text-center pt-20 pb-8">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={headingContainerVariants}
+        >
+          <motion.h2 variants={headingItemVariants} className="font-display text-4xl font-bold text-brand-primary mb-10 tracking-tight">Let's connect.</motion.h2>
+        </motion.div>
+        <div className="flex justify-center gap-4">
+          <a 
+            href="#" 
+            className="bg-brand-primary-container text-white border-2 border-brand-primary-container px-8 py-4 rounded font-mono text-xs uppercase tracking-widest hover:bg-brand-accent hover:border-brand-accent transition-all shadow-xl inline-flex items-center justify-center font-bold"
+          >
+            Download Resume
+          </a>
+          <button 
+            type="button"
+            onClick={() => setIsOpen(true)}
+            className="border-2 border-brand-primary-container text-brand-primary-container px-8 py-4 rounded font-mono text-xs uppercase tracking-widest hover:bg-brand-primary-container hover:text-white hover:border-brand-primary-container transition-all inline-flex items-center justify-center font-bold cursor-pointer"
+          >
+            Let's Talk
+          </button>
+        </div>
+      </div>
+
+      {/* Modals & Dialog overlays */}
+      <AnimatePresence>
+        {isOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsOpen(false)}
+              className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
+            />
+
+            {/* Modal Content */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              transition={{ type: "spring", duration: 0.4 }}
+              className="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl relative border border-brand-border/20 z-10"
+            >
+              <button
+                onClick={() => setIsOpen(false)}
+                className="absolute top-6 right-6 text-brand-muted hover:text-brand-primary transition-colors cursor-pointer"
+              >
+                <X size={20} />
+              </button>
+
+              <div className="mb-6">
+                <span className="font-mono text-brand-accent text-[10px] tracking-widest uppercase mb-2 block">Direct Connect</span>
+                <h3 className="font-display text-2xl font-bold text-brand-primary">Choose Your Platform</h3>
+                <p className="text-brand-muted text-sm mt-1">Select how you'd like to reach out and connect.</p>
+              </div>
+
+              {/* Message Copier Section */}
+              <div className="bg-[#F8F9FD] border border-brand-border/30 rounded-2xl p-5 mb-8">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="font-mono text-[9px] text-brand-accent uppercase tracking-widest font-bold">Suggested Message</span>
+                  <button
+                    onClick={handleCopyMessage}
+                    className="flex items-center gap-1.5 font-mono text-[9px] text-[#2B6CB0] hover:text-brand-accent font-bold transition-colors cursor-pointer uppercase"
+                  >
+                    {copiedText ? (
+                      <>
+                        <Check size={12} />
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={12} />
+                        Copy Message
+                      </>
+                    )}
+                  </button>
+                </div>
+                <div className="font-mono text-xs text-brand-primary/80 bg-white/70 border border-brand-border/20 p-3 rounded-lg max-h-24 overflow-y-auto whitespace-pre-wrap leading-relaxed text-left">
+                  {prewrittenMessage}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="space-y-3">
+                <a
+                  href={linkedinUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-between p-4 rounded-xl border border-brand-border/30 hover:border-brand-accent bg-white hover:bg-slate-50 transition-all group group/btn cursor-pointer"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-[#0077b5]/10 rounded-lg flex items-center justify-center text-[#0077b5] group-hover/btn:bg-[#0077b5] group-hover/btn:text-white transition-all">
+                      <Linkedin size={20} />
+                    </div>
+                    <div className="text-left font-sans">
+                      <h4 className="font-bold text-brand-primary text-sm group-hover/btn:text-[#2B6CB0] transition-colors">Connect on LinkedIn</h4>
+                      <p className="text-xs text-brand-muted">Drop a connection note or message</p>
+                    </div>
+                  </div>
+                  <ArrowUpRight size={16} className="text-brand-muted group-hover/btn:text-brand-accent transition-colors" />
+                </a>
+
+                <a
+                  href={mailtoUrl}
+                  className="w-full flex items-center justify-between p-4 rounded-xl border border-brand-border/30 hover:border-brand-accent bg-white hover:bg-slate-50 transition-all group group/btn cursor-pointer"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-[#ea4335]/10 rounded-lg flex items-center justify-center text-[#ea4335] group-hover/btn:bg-[#ea4335] group-hover/btn:text-white transition-all">
+                      <Mail size={20} />
+                    </div>
+                    <div className="text-left font-sans">
+                      <h4 className="font-bold text-brand-primary text-sm group-hover/btn:text-[#2B6CB0] transition-colors">Direct via Email</h4>
+                      <p className="text-xs text-brand-muted">Opens pre-filled email in your client</p>
+                    </div>
+                  </div>
+                  <ArrowUpRight size={16} className="text-brand-muted group-hover/btn:text-brand-accent transition-colors" />
+                </a>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
-  </div>
-);
+  );
+};
 
 const AnimatedTerminal = () => {
   const [lines, setLines] = useState<string[]>([]);
