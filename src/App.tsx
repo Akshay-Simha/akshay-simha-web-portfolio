@@ -512,6 +512,27 @@ const HomeTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
   </div>
 );
 
+const headingContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.15,
+    }
+  }
+};
+
+const headingItemVariants = {
+  hidden: { opacity: 0, y: 15 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.16, 1, 0.3, 1],
+    }
+  }
+};
+
 const TiltCard = ({ children, className, ...props }: { children: React.ReactNode; className?: string; [key: string]: any }) => {
   const x = useMotionValue(0.5);
   const y = useMotionValue(0.5);
@@ -586,12 +607,18 @@ const TiltCard = ({ children, className, ...props }: { children: React.ReactNode
 
 const SkillsTab = () => (
   <div>
-    <div className="mb-16">
-      <span className="font-mono text-brand-accent text-sm tracking-widest uppercase mb-4 block">01 / Technical Mastery</span>
-      <h2 className="font-display text-5xl font-bold text-brand-text tracking-tighter max-w-2xl">
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      variants={headingContainerVariants}
+      className="mb-16"
+    >
+      <motion.span variants={headingItemVariants} className="font-mono text-brand-accent text-sm tracking-widest uppercase mb-4 block">01 / Technical Mastery</motion.span>
+      <motion.h2 variants={headingItemVariants} className="font-display text-5xl font-bold text-brand-text tracking-tighter max-w-2xl">
         Technical Infrastructure & Automation Mastery
-      </h2>
-    </div>
+      </motion.h2>
+    </motion.div>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {RESUME_DATA.skills.map((skill, i) => (
         <TiltCard
@@ -625,45 +652,61 @@ const SkillsTab = () => (
 
 const ProjectsTab = () => (
   <div>
-    <div className="mb-16 flex justify-between items-end">
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      variants={headingContainerVariants}
+      className="mb-12 flex justify-between items-end"
+    >
       <div>
-        <span className="font-mono text-brand-accent text-sm tracking-widest uppercase mb-4 block">02 / Infrastructure Gallery</span>
-        <h2 className="font-display text-5xl font-bold text-brand-text tracking-tighter">
+        <motion.span variants={headingItemVariants} className="font-mono text-brand-accent text-sm tracking-widest uppercase mb-3 block">02 / Infrastructure Gallery</motion.span>
+        <motion.h2 variants={headingItemVariants} className="font-display text-4xl font-bold text-brand-text tracking-tighter">
           Infrastructure as Code & Deployment Showcase
-        </h2>
+        </motion.h2>
       </div>
-      <div className="flex gap-2">
-        <button className="p-3 border border-brand-border rounded-full hover:bg-slate-50 transition-colors"><ChevronRight className="rotate-180" size={20}/></button>
-        <button className="p-3 border border-brand-border rounded-full hover:bg-slate-50 transition-colors"><ChevronRight size={20}/></button>
-      </div>
-    </div>
-    <div className="space-y-24">
-      {RESUME_DATA.projects.map((project, i) => (
+    </motion.div>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+      {RESUME_DATA.projects.map((project) => (
         <motion.div 
           key={project.title}
-          className={`grid grid-cols-1 lg:grid-cols-12 gap-12 items-center ${i % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5 }}
+          className="flex"
         >
-          <TiltCard className={`lg:col-span-7 overflow-hidden rounded-3xl border border-brand-border glass-card shadow-lg group relative ${i % 2 === 1 ? 'lg:order-2' : ''}`}>
-            <img src={project.image} alt={project.title} className="w-full h-[450px] object-cover group-hover:scale-105 transition-transform duration-700" />
-            <div className="absolute inset-0 bg-brand-text/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
-              <button className="px-8 py-3 bg-white text-brand-text font-mono text-xs uppercase tracking-widest flex items-center gap-2 rounded">
-                View Architecture <ExternalLink size={14} />
-              </button>
+          <TiltCard className="overflow-hidden rounded-2xl border border-brand-border glass-card shadow-md group relative flex flex-col justify-between w-full hover:border-brand-accent/50 transition-colors duration-300">
+            <div className="relative overflow-hidden h-[240px] w-full">
+              <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500" />
+              <div className="absolute inset-0 bg-brand-text/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm duration-300">
+                <button className="px-6 py-2 bg-brand-accent text-white font-mono text-xs uppercase tracking-widest flex items-center gap-2 rounded shadow-lg hover:bg-brand-accent/90 transition-colors">
+                  View Architecture <ExternalLink size={12} />
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-6 flex-1 flex flex-col justify-between">
+              <div>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {project.tags.map(tag => (
+                    <span key={tag} className="font-mono text-[9px] uppercase tracking-wider text-brand-accent bg-brand-accent/5 px-2.5 py-0.5 rounded border border-brand-accent/10">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <h3 className="font-display text-2xl font-bold text-brand-text mb-3 group-hover:text-brand-accent transition-colors duration-200">{project.title}</h3>
+                <p className="text-brand-muted text-sm leading-relaxed mb-6">{project.description}</p>
+              </div>
+              
+              <div className="flex items-center gap-3 pt-4 border-t border-brand-border/20 text-xs text-brand-muted font-mono uppercase">
+                <div className="flex -space-x-1.5">
+                  {[1,2].map(u => <div key={u} className="w-5 h-5 rounded-full border border-white bg-slate-200" />)}
+                </div>
+                <span>Managed by {RESUME_DATA.name}</span>
+              </div>
             </div>
           </TiltCard>
-          <div className={`lg:col-span-5 ${i % 2 === 1 ? 'lg:order-1' : ''}`}>
-            <div className="flex gap-2 mb-6">
-              {project.tags.map(tag => <span key={tag} className="font-mono text-[10px] uppercase tracking-widest text-brand-accent">[ {tag} ]</span>)}
-            </div>
-            <h3 className="font-display text-4xl font-bold text-brand-text mb-6">{project.title}</h3>
-            <p className="text-brand-muted text-lg leading-relaxed mb-8">{project.description}</p>
-            <div className="flex items-center gap-4 py-6 border-y border-brand-border">
-              <div className="flex -space-x-2">
-                {[1,2,3].map(u => <div key={u} className="w-8 h-8 rounded-full border-2 border-white bg-slate-200" />)}
-              </div>
-              <span className="text-xs text-brand-muted font-mono uppercase">Managed by {RESUME_DATA.name}</span>
-            </div>
-          </div>
         </motion.div>
       ))}
     </div>
@@ -672,12 +715,18 @@ const ProjectsTab = () => (
 
 const ExperienceTab = () => (
   <div className="max-w-5xl mx-auto">
-    <div className="mb-16">
-      <span className="font-mono text-brand-accent text-sm tracking-widest uppercase mb-4 block">01 / Career Log</span>
-      <h2 className="font-display text-5xl font-bold text-brand-text tracking-tighter">
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      variants={headingContainerVariants}
+      className="mb-16"
+    >
+      <motion.span variants={headingItemVariants} className="font-mono text-brand-accent text-sm tracking-widest uppercase mb-4 block">01 / Career Log</motion.span>
+      <motion.h2 variants={headingItemVariants} className="font-display text-5xl font-bold text-brand-text tracking-tighter">
         Professional Experience
-      </h2>
-    </div>
+      </motion.h2>
+    </motion.div>
     
     <div className="space-y-12">
       {RESUME_DATA.experience.map((exp, i) => (
@@ -753,52 +802,64 @@ const ExperienceTab = () => (
 
 const CertificationsTab = () => (
   <div>
-    <div className="mb-16">
-      <span className="font-mono text-brand-accent text-sm tracking-widest uppercase mb-4 block">03 / Verified Credentials</span>
-      <h2 className="font-display text-5xl font-bold text-brand-text tracking-tighter">
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      variants={headingContainerVariants}
+      className="mb-16"
+    >
+      <motion.span variants={headingItemVariants} className="font-mono text-brand-accent text-sm tracking-widest uppercase mb-4 block">03 / Verified Credentials</motion.span>
+      <motion.h2 variants={headingItemVariants} className="font-display text-4xl font-bold text-brand-text tracking-tighter">
         Professional Certifications & Validated Skills
-      </h2>
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      </motion.h2>
+    </motion.div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {RESUME_DATA.certifications.map((cert, i) => (
-        <motion.a 
+        <a 
           key={cert.title}
           href={cert.link}
           target="_blank"
           rel="noopener noreferrer"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: i * 0.1 }}
-          className="glass-card p-8 group hover:border-brand-accent transition-all relative overflow-hidden block"
+          className="block h-full group"
         >
-          <div className="absolute -right-4 -bottom-4 opacity-[0.05] text-brand-text group-hover:scale-110 transition-transform duration-500">
-            <cert.icon size={120} />
-          </div>
-          <div className="relative z-10">
-            <div className="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center text-brand-accent mb-6 group-hover:bg-brand-accent group-hover:text-white transition-colors">
-              <Award size={24} />
-            </div>
-            <h3 className="font-display text-xl font-bold text-brand-text mb-4 leading-tight group-hover:text-brand-accent transition-colors">
-              {cert.title}
-            </h3>
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-[10px] text-brand-muted uppercase tracking-widest">Issuer:</span>
-                <span className="font-display font-medium text-brand-text text-sm">{cert.issuer}</span>
+          <TiltCard 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: i * 0.1 }}
+            className="glass-card p-6 h-full border border-brand-border hover:border-brand-accent/50 transition-all relative overflow-hidden flex flex-col justify-between"
+          >
+            <div>
+              <div className="absolute -right-4 -bottom-4 opacity-[0.05] text-brand-text group-hover:scale-110 transition-transform duration-500">
+                <cert.icon size={120} />
               </div>
-              <div className="flex items-center gap-2">
-                <span className="font-mono text-[10px] text-brand-muted uppercase tracking-widest">Issued:</span>
-                <span className="font-display font-medium text-brand-text text-sm">{cert.date}</span>
+              <div className="relative z-10">
+                <div className="w-10 h-10 bg-slate-100 rounded flex items-center justify-center text-brand-accent mb-4 group-hover:bg-brand-accent group-hover:text-white transition-colors">
+                  <Award size={20} />
+                </div>
+                <h3 className="font-display text-base font-bold text-brand-text mb-3 leading-snug group-hover:text-brand-accent transition-colors">
+                  {cert.title}
+                </h3>
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-[9px] text-brand-muted uppercase tracking-widest">Issuer:</span>
+                    <span className="font-display font-medium text-brand-text text-xs">{cert.issuer}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-[9px] text-brand-muted uppercase tracking-widest">Issued:</span>
+                    <span className="font-display font-medium text-brand-text text-xs">{cert.date}</span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="mt-8 pt-6 border-t border-brand-border flex justify-between items-center relative z-10">
-            <span className="status-badge">Verified</span>
-            <div className="text-brand-muted group-hover:text-brand-accent transition-colors">
-              <ExternalLink size={16} />
+            <div className="mt-6 pt-4 border-t border-brand-border flex justify-between items-center relative z-10 w-full">
+              <span className="status-badge text-[9px] px-2 py-0.5">Verified</span>
+              <div className="text-brand-muted group-hover:text-brand-accent transition-colors">
+                <ExternalLink size={14} />
+              </div>
             </div>
-          </div>
-        </motion.a>
+          </TiltCard>
+        </a>
       ))}
     </div>
   </div>
@@ -807,13 +868,19 @@ const CertificationsTab = () => (
 const ContactTab = () => (
   <div className="max-w-6xl mx-auto space-y-24 py-12">
     {/* Header */}
-    <div className="text-center">
-      <span className="font-mono text-brand-accent text-xs tracking-[0.4em] mb-4 block uppercase font-bold">--STATUS: LISTENING</span>
-      <h2 className="font-display text-6xl font-bold text-brand-primary tracking-tighter mb-6">Direct Connect</h2>
-      <p className="text-brand-muted text-lg max-w-2xl mx-auto leading-relaxed">
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      variants={headingContainerVariants}
+      className="text-center"
+    >
+      <motion.span variants={headingItemVariants} className="font-mono text-brand-accent text-xs tracking-[0.4em] mb-4 block uppercase font-bold">--STATUS: LISTENING</motion.span>
+      <motion.h2 variants={headingItemVariants} className="font-display text-6xl font-bold text-brand-primary tracking-tighter mb-6">Direct Connect</motion.h2>
+      <motion.p variants={headingItemVariants} className="text-brand-muted text-lg max-w-2xl mx-auto leading-relaxed">
         Skip the forms. I prefer direct communication for discussing architectural challenges, infrastructure scaling, or consulting opportunities.
-      </p>
-    </div>
+      </motion.p>
+    </motion.div>
 
     {/* Primary Cards */}
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -861,45 +928,59 @@ const ContactTab = () => (
     </div>
 
     {/* Info Terminal Card */}
-    <div className="rounded-[1.5rem] overflow-hidden shadow-2xl border border-brand-border/30">
-      <div className="bg-[#1a365d] p-8 md:p-12">
-        <div className="flex items-center gap-2 mb-10">
-          <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
-          <div className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
-          <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
-          <span className="ml-4 font-mono text-[10px] text-white/40 uppercase tracking-widest">protocol_info.json</span>
+    <div className="max-w-4xl mx-auto w-full">
+      <div className="terminal-card p-10 relative overflow-hidden group">
+        <div className="flex items-center gap-2 mb-8">
+          <div className="w-3 h-3 rounded-full bg-red-500" />
+          <div className="w-3 h-3 rounded-full bg-yellow-500" />
+          <div className="w-3 h-3 rounded-full bg-green-500" />
+          <span className="font-mono text-[10px] text-white/40 ml-4">root@portfolio:~/profile.yaml</span>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-white">
-          <div className="space-y-3">
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5adace] block">AVAILABILITY</span>
-            <p className="font-mono text-sm">Q3-Q4: Limited Capacity</p>
+        <div className="font-mono text-sm space-y-2">
+          <div className="text-brand-accent">engineer:</div>
+          <div className="pl-4">
+            <span className="text-white/60">name:</span> <span className="text-[#5adace]">"{RESUME_DATA.name}"</span>
           </div>
-          <div className="space-y-3">
-             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5adace] block">PREFERRED TOOLS</span>
-            <p className="font-mono text-sm">Slack, Discord, Zoom</p>
+          <div className="pl-4">
+            <span className="text-white/60">role:</span> <span className="text-[#5adace]">"DevOps Engineer"</span>
           </div>
-          <div className="space-y-3">
-             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5adace] block">TIMEZONE</span>
-            <p className="font-mono text-sm">Indian Standard Time (UTC+5:30)</p>
-          </div>
+          <div className="text-brand-accent">focuses:</div>
+          <ul className="pl-8 text-white/80 list-none space-y-1">
+            <li>- Cloud infrastructure</li>
+            <li>- Cloud security</li>
+            <li>- Monitoring and observability</li>
+          </ul>
         </div>
+        <Cloud size={200} className="absolute -right-20 -bottom-20 text-white opacity-[0.03] group-hover:scale-110 transition-transform" />
       </div>
     </div>
 
-    {/* Bottom Links */}
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {[
-        { label: "CODE", value: "GitHub" },
-        { label: "WRITING", value: "Medium" },
-        { label: "SUPPORT", value: "Discord" },
-        { label: "QA", value: "StackOverflow" }
-      ].map(link => (
-        <div key={link.label} className="bg-white/50 border border-brand-border/10 p-6 rounded-xl hover:bg-white transition-colors">
-          <span className="font-mono text-[10px] text-brand-muted uppercase tracking-widest block mb-1">{link.label}</span>
-          <span className="font-display font-bold text-brand-primary">{link.value}</span>
-        </div>
-      ))}
+
+
+    {/* Footer CTA */}
+    <div className="max-w-3xl mx-auto text-center pt-20 pb-8">
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={headingContainerVariants}
+      >
+        <motion.h2 variants={headingItemVariants} className="font-display text-4xl font-bold text-brand-primary mb-10 tracking-tight">Let's connect.</motion.h2>
+      </motion.div>
+      <div className="flex justify-center gap-4">
+        <a 
+          href="#" 
+          className="bg-brand-primary-container text-white px-8 py-4 rounded font-mono text-xs uppercase tracking-widest hover:bg-brand-accent transition-all shadow-xl inline-flex items-center justify-center font-bold"
+        >
+          Download Resume
+        </a>
+        <a 
+          href="mailto:simhaa.31@gmail.com?subject=Schedule%20a%20DevOps%20Consultation"
+          className="border border-brand-border text-brand-primary px-8 py-4 rounded font-mono text-xs uppercase tracking-widest hover:bg-slate-50 transition-all inline-flex items-center justify-center font-bold"
+        >
+          Schedule Consultation
+        </a>
+      </div>
     </div>
   </div>
 );
@@ -969,10 +1050,17 @@ const AboutTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
   <div className="space-y-32">
     {/* Engine Details */}
     <div className="max-w-5xl mx-auto px-6">
-      <span className="font-mono text-brand-accent text-[10px] tracking-[0.4em] uppercase mb-6 block">Build. Automate. Scale.</span>
-      <h2 className="font-display text-6xl lg:text-7xl font-bold text-brand-primary leading-[1.1] tracking-tighter mb-16 max-w-4xl">
-        Bridging the gap between <span className="text-[#2B6CB0]">Code</span> and <span className="text-[#2B6CB0]">Stability.</span>
-      </h2>
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={headingContainerVariants}
+      >
+        <motion.span variants={headingItemVariants} className="font-mono text-brand-accent text-[10px] tracking-[0.4em] uppercase mb-6 block">Build. Automate. Scale.</motion.span>
+        <motion.h2 variants={headingItemVariants} className="font-display text-6xl lg:text-7xl font-bold text-brand-primary leading-[1.1] tracking-tighter mb-16 max-w-4xl">
+          Bridging the gap between <span className="text-[#2B6CB0]">Code</span> and <span className="text-[#2B6CB0]">Stability.</span>
+        </motion.h2>
+      </motion.div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-16 border-t border-brand-border/30 pt-12">
         <div className="space-y-6">
           <div className="flex items-center gap-3 text-brand-accent">
@@ -991,7 +1079,14 @@ const AboutTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
 
     {/* Engineering Philosophy */}
     <div className="max-w-5xl mx-auto text-center px-6">
-      <h2 className="font-display text-4xl font-bold text-brand-primary mb-16 tracking-tight">Engineering Philosophy</h2>
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={headingContainerVariants}
+      >
+        <motion.h2 variants={headingItemVariants} className="font-display text-4xl font-bold text-brand-primary mb-16 tracking-tight">Engineering Philosophy</motion.h2>
+      </motion.div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {RESUME_DATA.philosophy.map((item, i) => (
           <motion.div
@@ -1017,10 +1112,16 @@ const AboutTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
 
     {/* Career Trajectory (Timeline Style) */}
     <div className="max-w-5xl mx-auto bg-[#F8F9FD] py-16 md:py-24 px-6 md:px-12 rounded-[2rem] md:rounded-[3rem] border border-brand-border/30">
-      <div className="mb-12 md:mb-16">
-        <span className="font-mono text-brand-accent text-xs tracking-[0.4em] mb-4 block">git log --oneline</span>
-        <h2 className="font-display text-4xl md:text-5xl font-bold text-brand-primary tracking-tighter">Career Trajectory</h2>
-      </div>
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={headingContainerVariants}
+        className="mb-12 md:mb-16"
+      >
+        <motion.span variants={headingItemVariants} className="font-mono text-brand-accent text-xs tracking-[0.4em] mb-4 block">git log --oneline</motion.span>
+        <motion.h2 variants={headingItemVariants} className="font-display text-4xl md:text-5xl font-bold text-brand-primary tracking-tighter">Career Trajectory</motion.h2>
+      </motion.div>
       
       <div className="space-y-16 relative">
         {/* Timeline Line */}
@@ -1056,52 +1157,6 @@ const AboutTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
       </div>
     </div>
 
-    {/* Tech Profile Summary (YAML Style) */}
-    <div className="max-w-4xl mx-auto">
-      <div className="terminal-card p-10 relative overflow-hidden group">
-        <div className="flex items-center gap-2 mb-8">
-          <div className="w-3 h-3 rounded-full bg-red-500" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500" />
-          <div className="w-3 h-3 rounded-full bg-green-500" />
-          <span className="font-mono text-[10px] text-white/40 ml-4">root@portfolio:~/profile.yaml</span>
-        </div>
-        <div className="font-mono text-sm space-y-2">
-          <div className="text-brand-accent">engineer:</div>
-          <div className="pl-4">
-            <span className="text-white/60">name:</span> <span className="text-[#5adace]">"{RESUME_DATA.name}"</span>
-          </div>
-          <div className="pl-4">
-            <span className="text-white/60">role:</span> <span className="text-[#5adace]">"DevOps Engineer"</span>
-          </div>
-          <div className="text-brand-accent">focuses:</div>
-          <ul className="pl-8 text-white/80 list-none">
-            <li>- Cloud infrastructure</li>
-            <li>- Cloud security</li>
-            <li>- Monitoring and observability</li>
-          </ul>
-        </div>
-        <Cloud size={200} className="absolute -right-20 -bottom-20 text-white opacity-[0.03] group-hover:scale-110 transition-transform" />
-      </div>
-    </div>
-
-    {/* Footer CTA */}
-    <div className="max-w-3xl mx-auto text-center py-20">
-      <h2 className="font-display text-4xl font-bold text-brand-primary mb-10 tracking-tight">Let's connect.</h2>
-      <div className="flex justify-center gap-4">
-        <button 
-          onClick={() => document.getElementById("Contact")?.scrollIntoView({ behavior: "smooth" })}
-          className="bg-brand-primary-container text-white px-8 py-4 rounded font-mono text-xs uppercase tracking-widest hover:bg-brand-accent transition-all shadow-xl cursor-pointer"
-        >
-          Contact
-        </button>
-        <a 
-          href="#" 
-          className="border border-brand-border text-brand-primary px-8 py-4 rounded font-mono text-xs uppercase tracking-widest hover:bg-slate-50 transition-all inline-flex items-center justify-center"
-        >
-          Download Resume
-        </a>
-      </div>
-    </div>
   </div>
 );
 
@@ -1140,69 +1195,42 @@ export default function App() {
   };
 
   const onTabClick = (tab: string) => {
-    if (["Home", "About", "Experience", "Contact"].includes(tab)) {
-      const isCurrentlyTabbed = ["Skills", "Projects", "Certifications"].includes(activeTab);
-      setActiveTab(tab);
-      
-      const performScroll = () => {
-        const el = document.getElementById(tab);
-        if (el) {
-          const yCoordinate = el.getBoundingClientRect().top + window.scrollY;
-          const yOffset = -110; // offset matches scroll-mt-32 seamlessly
-          smoothScrollTo(yCoordinate + yOffset, 900);
-        }
-      };
-
-      if (isCurrentlyTabbed) {
-        // Wait a brief tick for the single-page DOM elements to mount
-        setTimeout(performScroll, 50);
-      } else {
-        performScroll();
-      }
-    } else {
-      setActiveTab(tab);
-      smoothScrollTo(0, 850);
+    setActiveTab(tab);
+    const el = document.getElementById(tab);
+    if (el) {
+      const yCoordinate = el.getBoundingClientRect().top + window.scrollY;
+      const yOffset = -110; // offset matches scroll-mt-32 seamlessly
+      smoothScrollTo(yCoordinate + yOffset, 900);
     }
   };
 
   // Scroll-spy: update active tab as user scrolls down the page
   useEffect(() => {
-    // Only spy on currently rendered single-page layout elements
-    const sections = ["Home", "About", "Experience", "Contact"];
+    const sections = ["Home", "About", "Experience", "Skills", "Projects", "Certifications", "Contact"];
     
-    const observerOptions = {
-      root: null,
-      rootMargin: "-25% 0px -55% 0px", // Focus on focal viewport zone
-      threshold: 0.1,
-    };
-
-    const handleIntersection = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        // Only trigger spy if the element is intersecting and we are actually in the single-page layout
-        if (entry.isIntersecting && sections.includes(activeTab)) {
-          setActiveTab(entry.target.id);
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 250; // offset matches visual threshold
+      let currentSection = "Home";
+      
+      for (const sectionId of sections) {
+        const el = document.getElementById(sectionId);
+        if (el) {
+          const top = el.offsetTop;
+          if (scrollPosition >= top - 20) {
+            currentSection = sectionId;
+          }
         }
-      });
+      }
+      setActiveTab(currentSection);
     };
 
-    const observer = new IntersectionObserver(handleIntersection, observerOptions);
-
-    sections.forEach((id) => {
-      const element = document.getElementById(id);
-      if (element) {
-        observer.observe(element);
-      }
-    });
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
 
     return () => {
-      sections.forEach((id) => {
-        const element = document.getElementById(id);
-        if (element) {
-          observer.unobserve(element);
-        }
-      });
+      window.removeEventListener("scroll", handleScroll);
     };
-  }, [activeTab]);
+  }, []);
 
   // Prevent scroll when mobile menu is open
   useEffect(() => {
@@ -1217,8 +1245,6 @@ export default function App() {
   }, [isMenuOpen]);
 
   if (!mounted) return null;
-
-  const isMainScrollLayout = ["Home", "About", "Experience", "Contact"].includes(activeTab);
 
   return (
     <div className="min-h-screen bg-brand-bg relative overflow-x-hidden pt-32 pb-24 selection:bg-brand-accent selection:text-white">
@@ -1246,43 +1272,48 @@ export default function App() {
       />
 
       <main className="max-w-7xl mx-auto px-6 relative z-10 pb-32">
-        {isMainScrollLayout ? (
-          <div className="space-y-48">
-            <section id="Home" className="scroll-mt-32">
-              <HomeTab setActiveTab={onTabClick} />
-            </section>
+        <div className="space-y-48">
+          <section id="Home" className="scroll-mt-32">
+            <HomeTab setActiveTab={onTabClick} />
+          </section>
 
-            <section id="About" className="scroll-mt-32">
-              <AboutTab setActiveTab={onTabClick} />
-            </section>
+          <section id="About" className="scroll-mt-32">
+            <AboutTab setActiveTab={onTabClick} />
+          </section>
 
-            <section id="Experience" className="scroll-mt-32">
-              <ExperienceTab />
-            </section>
+          <section id="Experience" className="scroll-mt-32">
+            <ExperienceTab />
+          </section>
 
-            <section id="Contact" className="scroll-mt-32">
-              <ContactTab />
-            </section>
-          </div>
-        ) : (
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.35 }}
-              className="pt-8"
-            >
-              {activeTab === "Skills" && <SkillsTab />}
-              {activeTab === "Projects" && <ProjectsTab />}
-              {activeTab === "Certifications" && <CertificationsTab />}
-            </motion.div>
-          </AnimatePresence>
-        )}
+          <section id="Skills" className="scroll-mt-32">
+            <SkillsTab />
+          </section>
+
+          <section id="Projects" className="scroll-mt-32">
+            <ProjectsTab />
+          </section>
+
+          <section id="Certifications" className="scroll-mt-32">
+            <CertificationsTab />
+          </section>
+
+          <section id="Contact" className="scroll-mt-32">
+            <ContactTab />
+          </section>
+        </div>
       </main>
 
-      {/* Floating Meta Details (Scrollable elements might need more space) skipped as requested */}
+      {/* Footer with copyright message */}
+      <footer className="relative z-10 border-t border-[#132237] py-6 px-6 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-[#5c7a9c] gap-3 font-mono text-[9px] uppercase tracking-widest mt-12">
+        <div>
+          &copy; {new Date().getFullYear()} {RESUME_DATA.name}. All rights reserved.
+        </div>
+        <div className="flex gap-4 items-center">
+          <a href="#Home" onClick={(e) => { e.preventDefault(); onTabClick("Home"); }} className="hover:text-brand-accent transition-colors duration-200 cursor-pointer">Back to Top</a>
+          <span className="text-brand-border/30">&middot;</span>
+          <span>Designed with Precision</span>
+        </div>
+      </footer>
     </div>
   );
 }
