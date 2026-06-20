@@ -915,41 +915,49 @@ Best regards,
           href="https://www.linkedin.com/in/akshaysimha-70b369210/"
           target="_blank"
           rel="noopener noreferrer"
-          className="glass-card p-10 bg-white border border-brand-border/30 rounded-[2rem] relative group hover:border-brand-accent transition-all block"
+          className="block h-full group"
         >
-          <div className="flex justify-between items-start mb-8">
-            <div className="w-12 h-12 bg-[#1a365d] rounded-xl flex items-center justify-center text-white">
-              <Linkedin size={24} />
+          <TiltCard
+            className="glass-card p-10 bg-white border border-brand-border/30 rounded-[2rem] h-full"
+          >
+            <div className="flex justify-between items-start mb-8">
+              <div className="w-12 h-12 bg-[#1a365d] rounded-xl flex items-center justify-center text-white">
+                <Linkedin size={24} />
+              </div>
+              <ArrowUpRight size={20} className="text-brand-muted group-hover:text-brand-accent transition-colors" />
             </div>
-            <ArrowUpRight size={20} className="text-brand-muted group-hover:text-brand-accent transition-colors" />
-          </div>
-          <h3 className="font-display text-2xl font-bold text-brand-primary mb-4">LinkedIn</h3>
-          <p className="text-brand-muted mb-8 leading-relaxed">
-            Connect for professional networking, explore my career journey, and stay updated with my latest technical insights and industry contributions.
-          </p>
-          <div className="pt-6 border-t border-brand-border/30">
-            <span className="font-mono text-[10px] uppercase tracking-widest font-bold text-brand-accent">LINKEDIN: akshaysimha</span>
-          </div>
+            <h3 className="font-display text-2xl font-bold text-brand-primary mb-4">LinkedIn</h3>
+            <p className="text-brand-muted mb-8 leading-relaxed">
+              Connect for professional networking, explore my career journey, and stay updated with my latest technical insights and industry contributions.
+            </p>
+            <div className="pt-6 border-t border-brand-border/30">
+              <span className="font-mono text-[10px] uppercase tracking-widest font-bold text-brand-accent">LINKEDIN: akshaysimha</span>
+            </div>
+          </TiltCard>
         </a>
 
         {/* Direct Inquiry */}
         <a 
           href={mailtoUrl}
-          className="glass-card p-10 bg-white border border-brand-border/30 rounded-[2rem] relative group hover:border-brand-accent transition-all block"
+          className="block h-full group"
         >
-          <div className="flex justify-between items-start mb-8">
-            <div className="w-12 h-12 bg-[#1a365d] rounded-xl flex items-center justify-center text-white">
-              <Mail size={24} />
+          <TiltCard
+            className="glass-card p-10 bg-white border border-brand-border/30 rounded-[2rem] h-full"
+          >
+            <div className="flex justify-between items-start mb-8">
+              <div className="w-12 h-12 bg-[#1a365d] rounded-xl flex items-center justify-center text-white">
+                <Mail size={24} />
+              </div>
+              <ArrowUpRight size={20} className="text-brand-muted group-hover:text-brand-accent transition-colors" />
             </div>
-            <ArrowUpRight size={20} className="text-brand-muted group-hover:text-brand-accent transition-colors" />
-          </div>
-          <h3 className="font-display text-2xl font-bold text-brand-primary mb-4">Gmail</h3>
-          <p className="text-brand-muted mb-8 leading-relaxed">
-            Reach out directly for project collaborations, technical consultations, or professional inquiries. I typically respond to architectural proposals within 24 hours.
-          </p>
-          <div className="pt-6 border-t border-brand-border/30">
-            <span className="font-mono text-[10px] uppercase tracking-widest font-bold text-brand-accent">GMAIL: simhaa.31@gmail.com</span>
-          </div>
+            <h3 className="font-display text-2xl font-bold text-brand-primary mb-4">Gmail</h3>
+            <p className="text-brand-muted mb-8 leading-relaxed">
+              Reach out directly for project collaborations, technical consultations, or professional inquiries. I typically respond to architectural proposals within 24 hours.
+            </p>
+            <div className="pt-6 border-t border-brand-border/30">
+              <span className="font-mono text-[10px] uppercase tracking-widest font-bold text-brand-accent">GMAIL: simhaa.31@gmail.com</span>
+            </div>
+          </TiltCard>
         </a>
       </div>
 
