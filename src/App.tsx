@@ -1,12 +1,14 @@
-import { motion, AnimatePresence } from "motion/react";
-import {
-  Cloud,
-  Terminal,
+import { motion, AnimatePresence, useMotionValue, useTransform, useSpring, useScroll } from "motion/react";
+// @ts-ignore
+import signatureLogo from "./assets/images/as_signature_logo_1779615269869.png";
+import { 
+  Cloud, 
+  Terminal, 
   ArrowRight,
-  Github,
-  Linkedin,
-  Mail,
-  ExternalLink,
+  Github, 
+  Linkedin, 
+  Mail, 
+  ExternalLink, 
   ChevronRight,
   Database,
   Shield,
@@ -28,10 +30,10 @@ import {
   Share2,
   ArrowUpRight
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const RESUME_DATA = {
-  name: "Akshay Simha S",
+  name: "Akshay Simha S", 
   role: "DevOps Engineer",
   location: "Bengaluru, India",
   summary: "DevOps Engineer with 1+ years of hands-on experience in automating AWS infrastructure using Terraform, building CI/CD pipelines with GitHub Actions, and implementing monitoring using Prometheus and Grafana. Proven ability to reduce operational overhead and cloud costs, strengthen cloud security through IAM best practices and SSO, and improving system reliability through observability and standardized DevOps processes.",
@@ -89,12 +91,12 @@ const RESUME_DATA = {
     }
   ],
   skills: [
-    { category: "Cloud Ecosystems", items: ["AWS (EC2, S3, RDS, IAM)", "Route 53", "VPC Networking"], icon: Cloud },
-    { category: "Infrastructure as Code", items: ["Terraform", "CloudFormation", "Ansible"], icon: Code2 },
-    { category: "Containers & Orchestration", items: ["Docker", "Kubernetes", "Docker Compose"], icon: Box },
-    { category: "Observability & Monitoring", items: ["Prometheus", "Grafana", "CloudWatch"], icon: BarChart3 },
-    { category: "CI/CD & Automation", items: ["GitHub Actions", "Jenkins", "Webhooks"], icon: Settings },
-    { category: "Security & Management", items: ["IAM Roles", "AWS SSO", "KMS Encryption"], icon: Shield }
+    { category: "Cloud Ecosystems", items: ["AWS (EC2, S3, RDS, IAM)", "GCP (Compute, GCS, Cloud SQL)", "Azure (VMs, Blob, SQL DB)", "Route 53", "VPC Networking"], icon: Cloud },
+    { category: "Infrastructure as Code", items: ["Terraform", "AWS CloudFormation"], icon: Code2 },
+    { category: "Containers & Orchestration", items: ["Docker & Docker Compose", "Kubernetes", "AWS EKS / ECS"], icon: Box },
+    { category: "Observability & Monitoring", items: ["Prometheus", "Grafana", "AWS CloudWatch"], icon: BarChart3 },
+    { category: "CI/CD & Automation", items: ["GitHub Actions", "AWS CodePipeline"], icon: Settings },
+    { category: "Security & Management", items: ["AWS IAM & SSO", "GCP IAM", "AWS KMS"], icon: Shield }
   ],
   projects: [
     {
@@ -142,32 +144,135 @@ const RESUME_DATA = {
   ]
 };
 
-const Header = ({ activeTab, setActiveTab, isMenuOpen, setIsMenuOpen }: { activeTab: string, setActiveTab: (t: string) => void, isMenuOpen: boolean, setIsMenuOpen: (v: boolean) => void }) => {
+const Header = ({ activeTab, onTabClick, isMenuOpen, setIsMenuOpen }: { activeTab: string, onTabClick: (t: string) => void, isMenuOpen: boolean, setIsMenuOpen: (v: boolean) => void }) => {
   const tabs = ["Home", "About", "Experience", "Skills", "Projects", "Certifications", "Contact"];
+  const [isConsoleOpen, setIsConsoleOpen] = useState(false);
+  const [terminalInput, setTerminalInput] = useState("");
+  const [terminalHistory, setTerminalHistory] = useState<Array<{ type: "input" | "output"; text: string }>>([
+    { type: "output", text: "Welcome to Akshay Simha's devops console (AS-CLI v1.0.0)" },
+    { type: "output", text: "Type 'help' to list available navigation & custom commands." }
+  ]);
+  
+  const inputRef = useRef<HTMLInputElement>(null);
+  const historyEndRef = useRef<HTMLDivElement>(null);
+  const consoleWrapperRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll when history updates
+  useEffect(() => {
+    historyEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [terminalHistory]);
+
+  // Focus input when open
+  useEffect(() => {
+    if (isConsoleOpen) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+    }
+  }, [isConsoleOpen]);
+
+  // Close console when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        isConsoleOpen &&
+        consoleWrapperRef.current &&
+        !consoleWrapperRef.current.contains(event.target as Node)
+      ) {
+        setIsConsoleOpen(false);
+      }
+    }
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isConsoleOpen]);
+
+  const handleTerminalSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const command = terminalInput.trim();
+    if (!command) return;
+
+    const lowerCmd = command.toLowerCase();
+    const newHistory = [...terminalHistory, { type: "input" as const, text: command }];
+
+    let response = "";
+    
+    if (lowerCmd === "help") {
+      response = `Available commands:\n  help           - Show this description\n  home           - Go to Home tab\n  about          - Go to About tab\n  experience     - Go to Experience tab\n  skills         - Go to Skills tab\n  projects       - Go to Projects tab\n  certifications - Go to Certifications tab\n  contact        - Go to Contact tab\n  socials        - View social connection links\n  clear          - Clear console logs`;
+    } else if (lowerCmd === "clear") {
+      setTerminalHistory([
+        { type: "output", text: "Welcome to Akshay Simha's devops console (AS-CLI v1.0.0)" },
+        { type: "output", text: "Type 'help' to list available navigation & custom commands." }
+      ]);
+      setTerminalInput("");
+      return;
+    } else if (lowerCmd === "home") {
+      onTabClick("Home");
+      response = "Navigating to: Home";
+    } else if (lowerCmd === "about") {
+      onTabClick("About");
+      response = "Navigating to: About";
+    } else if (lowerCmd === "experience") {
+      onTabClick("Experience");
+      response = "Navigating to: Experience";
+    } else if (lowerCmd === "skills") {
+      onTabClick("Skills");
+      response = "Navigating to: Skills\n- Cloud Ecosystems (AWS, GCP, Azure)\n- Infrastructure as Code (Terraform, CloudFormation)\n- Containers & Orchestration (Docker, Kubernetes)\n- Observability & Monitoring (Prometheus, Grafana)";
+    } else if (lowerCmd === "projects") {
+      onTabClick("Projects");
+      response = "Navigating to: Projects\n- Self-Healing Infrastructure\n- Global Observability Hub";
+    } else if (lowerCmd === "certifications") {
+      onTabClick("Certifications");
+      response = "Navigating to: Certifications";
+    } else if (lowerCmd === "contact") {
+      onTabClick("Contact");
+      response = "Navigating to: Contact";
+    } else if (lowerCmd === "socials") {
+      response = "LinkedIn: https://www.linkedin.com/in/akshaysimha-70b369210/\nEmail: simhaa.31@gmail.com";
+    } else {
+      response = `Command unrecognized: '${command}'. Type 'help' for options.`;
+    }
+
+    setTerminalHistory([...newHistory, { type: "output" as const, text: response }]);
+    setTerminalInput("");
+  };
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isMenuOpen ? "bg-white" : "bg-white/80 backdrop-blur-md"} border-b border-brand-border/30`}>
       <nav className="flex justify-between items-center max-w-7xl mx-auto px-6 h-16 w-full relative">
-        <button
+        <motion.button 
           onClick={() => {
-            setActiveTab("Home");
+            onTabClick("Home");
             setIsMenuOpen(false);
           }}
-          className="font-display text-xl font-bold tracking-tighter text-brand-primary hover:text-brand-accent transition-colors z-50"
+          whileHover={{ scale: 1.03, y: -0.5 }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="flex items-center z-50 h-10 py-1 cursor-pointer"
+          aria-label="Home"
         >
-          My Portfolio
-        </button>
+          <img 
+            src={signatureLogo} 
+            alt="Akshay Simha S" 
+            className="h-14 md:h-16 w-auto object-contain mix-blend-multiply" 
+            style={{ filter: "hue-rotate(61deg) saturate(90%) brightness(1.3)" }}
+            referrerPolicy="no-referrer"
+          />
+        </motion.button>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
           {tabs.map((tab) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`font-mono text-[11px] uppercase tracking-widest transition-all duration-200 border-b-2 pb-1 ${activeTab === tab
-                ? "text-brand-accent font-bold border-brand-accent"
-                : "text-brand-muted border-transparent hover:text-brand-accent"
-                }`}
+              onClick={() => onTabClick(tab)}
+              className={`font-mono text-[11px] uppercase tracking-widest transition-all duration-200 border-b-2 pb-1 cursor-pointer select-none ${
+                activeTab === tab 
+                  ? "text-brand-accent font-bold border-brand-accent" 
+                  : "text-brand-muted border-transparent hover:text-brand-accent"
+              }`}
             >
               {tab}
             </button>
@@ -175,7 +280,7 @@ const Header = ({ activeTab, setActiveTab, isMenuOpen, setIsMenuOpen }: { active
         </div>
 
         {/* Mobile menu button */}
-        <button
+        <button 
           className="md:hidden z-50 p-2 text-brand-primary h-10 w-10 flex flex-col items-center justify-center gap-1.5"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label="Toggle menu"
@@ -185,19 +290,78 @@ const Header = ({ activeTab, setActiveTab, isMenuOpen, setIsMenuOpen }: { active
           <div className={`w-6 h-0.5 bg-current transition-all duration-300 ${isMenuOpen ? "-rotate-45 -translate-y-2" : ""}`}></div>
         </button>
 
-        <div className="hidden md:flex items-center gap-4">
-          <button className="p-2 text-brand-primary hover:bg-slate-100 rounded-full transition-all duration-200">
+        {/* Desktop Terminal Trigger and Dropdown CLI */}
+        <div ref={consoleWrapperRef} className="hidden md:flex items-center gap-4 relative">
+          <button 
+            onClick={() => setIsConsoleOpen(!isConsoleOpen)}
+            className={`p-2 rounded-full transition-all duration-200 ${isConsoleOpen ? "bg-brand-accent/10 text-brand-accent" : "text-brand-primary hover:bg-slate-100"}`}
+            aria-label="Toggle drop logs console"
+          >
             <Terminal size={18} />
           </button>
+
+          <AnimatePresence>
+            {isConsoleOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 15, scale: 0.95 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="absolute top-12 right-0 w-[420px] max-w-lg bg-[#0a0f1d] text-slate-200 rounded-xl border border-slate-800 shadow-2xl backdrop-blur-md flex flex-col overflow-hidden font-mono text-xs z-50 h-[340px]"
+              >
+                {/* Console header */}
+                <div className="bg-[#12192c] px-4 py-2.5 flex items-center justify-between border-b border-slate-800/80 shrink-0 select-none">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-500/80"></span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/80"></span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-bold tracking-tight">akshay@devops-sh: ~</span>
+                  <button onClick={() => setIsConsoleOpen(false)} className="text-slate-400 hover:text-white transition-colors" aria-label="Close">✕</button>
+                </div>
+
+                {/* Console body */}
+                <div className="flex-1 p-3 overflow-y-auto font-mono text-[11px] leading-relaxed space-y-1.5 text-slate-300">
+                  {terminalHistory.map((line, i) => (
+                    <div key={i} className="whitespace-pre-wrap">
+                      {line.type === "input" ? (
+                        <div className="flex items-start gap-1">
+                          <span className="text-brand-accent shrink-0 select-none">akshay@devops-sh:~$</span>
+                          <span className="text-white font-medium">{line.text}</span>
+                        </div>
+                      ) : (
+                        <div className="text-emerald-400 pl-2 border-l border-emerald-500/10 py-0.5">{line.text}</div>
+                      )}
+                    </div>
+                  ))}
+                  <div ref={historyEndRef} />
+                </div>
+                
+                {/* Console input form */}
+                <form onSubmit={handleTerminalSubmit} className="bg-[#0e1426] border-t border-slate-800/80 p-2.5 flex items-center gap-1.5 shrink-0">
+                  <span className="text-brand-accent font-semibold text-[11px] select-none">akshay@devops-sh:~$</span>
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={terminalInput}
+                    onChange={(e) => setTerminalInput(e.target.value)}
+                    className="flex-1 bg-transparent border-none outline-none text-white font-mono text-[11px] p-0 focus:outline-none focus:ring-0"
+                    placeholder="type command..."
+                  />
+                  <button type="submit" className="hidden" />
+                </form>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </nav>
     </header>
   );
 };
 
-const MobileMenu = ({ isOpen, activeTab, setActiveTab, onClose }: { isOpen: boolean, activeTab: string, setActiveTab: (t: string) => void, onClose: () => void }) => {
+const MobileMenu = ({ isOpen, activeTab, onTabClick, onClose }: { isOpen: boolean, activeTab: string, onTabClick: (t: string) => void, onClose: () => void }) => {
   const tabs = ["Home", "About", "Experience", "Skills", "Projects", "Certifications", "Contact"];
-
+  
   return (
     <AnimatePresence>
       {isOpen && (
@@ -216,17 +380,18 @@ const MobileMenu = ({ isOpen, activeTab, setActiveTab, onClose }: { isOpen: bool
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.05 }}
                 onClick={() => {
-                  setActiveTab(tab);
+                  onTabClick(tab);
                   onClose();
                 }}
-                className={`font-display text-4xl font-bold tracking-tighter transition-colors text-left w-full ${activeTab === tab ? "text-brand-accent" : "text-brand-primary hover:text-brand-accent"
-                  }`}
+                className={`font-display text-4xl font-bold tracking-tighter transition-colors text-left w-full cursor-pointer select-none ${
+                  activeTab === tab ? "text-brand-accent font-extrabold" : "text-brand-primary hover:text-brand-accent"
+                }`}
               >
                 {tab}
               </motion.button>
             ))}
           </div>
-
+          
           <div className="mt-auto py-12 border-t border-brand-border/30 space-y-6">
             <div className="flex gap-6">
               <a href="https://www.linkedin.com/in/akshaysimha-70b369210/" target="_blank" rel="noopener noreferrer" className="text-brand-muted hover:text-brand-accent transition-colors"><Linkedin size={24} /></a>
@@ -247,36 +412,36 @@ const HomeTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
           <span className="w-2 h-2 bg-brand-accent rounded-full animate-pulse"></span>
           <span className="font-mono text-[10px] text-brand-accent uppercase tracking-widest font-medium">System Status: Optimal</span>
         </div>
-
+        
         <h1 className="font-display text-6xl lg:text-8xl text-brand-primary leading-[1.1] tracking-tighter font-bold">
           Akshay Simha S
         </h1>
-
+        
         <h2 className="font-display text-xl text-brand-accent bg-brand-primary-container px-4 py-2 inline-block rounded-lg font-semibold">
           DevOps Engineer
         </h2>
-
+        
         <p className="font-sans text-lg text-brand-muted max-w-xl leading-relaxed">
           Architecting resilient infrastructure through <span className="text-brand-primary font-bold">Cloud-Native</span> solutions. Specialized in end-to-end automation, scalable <span className="text-brand-primary font-bold">CI/CD</span> pipelines, and infrastructure-as-code orchestration.
         </p>
-
+        
         <div className="flex flex-wrap gap-4 pt-4">
-          <button
-            onClick={() => setActiveTab("About")}
-            className="bg-brand-primary-container text-white px-8 py-3 rounded shadow-sm hover:bg-brand-accent transition-all duration-300 font-mono text-[11px] uppercase tracking-wider flex items-center gap-2 group"
+          <button 
+            onClick={() => document.getElementById("About")?.scrollIntoView({ behavior: "smooth" })}
+            className="bg-brand-primary-container text-white px-8 py-3 rounded shadow-sm hover:bg-brand-accent transition-all duration-300 font-mono text-[11px] uppercase tracking-wider flex items-center gap-2 group cursor-pointer"
           >
             <span>About</span>
             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
           </button>
-          <button
-            onClick={() => setActiveTab("Contact")}
-            className="border border-brand-border text-brand-muted px-8 py-3 rounded font-mono text-[11px] uppercase tracking-wider hover:bg-slate-50 transition-all duration-300"
+          <button 
+            onClick={() => document.getElementById("Contact")?.scrollIntoView({ behavior: "smooth" })}
+            className="border border-brand-border text-brand-muted px-8 py-3 rounded font-mono text-[11px] uppercase tracking-wider hover:bg-slate-50 transition-all duration-300 cursor-pointer"
           >
             Connect
           </button>
         </div>
       </div>
-
+      
       <div className="w-full md:w-2/5 flex justify-center">
         <div className="relative w-72 h-72 md:w-96 md:h-96">
           <div className="absolute inset-0 border-2 border-dashed border-brand-accent/30 rounded-full animate-[spin_20s_linear_infinite]"></div>
@@ -288,14 +453,14 @@ const HomeTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
               transition={{ duration: 0.8 }}
               className="w-full h-full"
             >
-              <img
-                alt="Akshay Simha S"
-                className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-700 shadow-xl border-4 border-white"
-                src="/Akshay_Simha_S_Photo.jpg"
+              <img 
+                alt="Akshay Simha S" 
+                className="w-full h-full object-cover rounded-full grayscale hover:grayscale-0 transition-all duration-700 shadow-xl border-4 border-white" 
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSxKzecrVwLHXn56nGnhTrFzJtisCSPcm8otqrb44plBIpdn6keFLBWRR1rU_SV5DNdgM4oAqbdLssKY9pHV0zXDgMKzMLKCNGDPiEK6vBJLX26GE0hq_d4-Gi5gie4XWaDeapIOwXbcDx2DeLMQgHji5Ixv3Sn3Zk4-KXtxuxqOByojBMjXaIXMiqMs-H8BUn1arIcBtzaufChAKdt5q6rBjjqzFiEOQlptL4aXF07HW9zPmuSOUH2sp3_AVdYN4f9UlEO-mymYN0"
               />
             </motion.div>
           </div>
-
+          
           {/* Floating Asset */}
           <div className="absolute top-4 right-0 bg-white shadow-lg p-2 rounded-lg border border-brand-border flex items-center gap-2 animate-bounce">
             <Cloud className="text-brand-accent" size={16} fill="currentColor" fillOpacity={0.1} />
@@ -311,7 +476,7 @@ const HomeTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
         <h2 className="font-display text-4xl font-bold text-brand-primary tracking-tight mb-4">Technical Expertise</h2>
         <p className="text-brand-muted text-lg">Standardized tools and practices for growth-oriented environments.</p>
       </div>
-
+      
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Cloud Architecture Card */}
         <div className="glass-card p-10 bg-white border border-brand-border/30 rounded-3xl relative group hover:border-brand-accent transition-all">
@@ -347,6 +512,78 @@ const HomeTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
   </div>
 );
 
+const TiltCard = ({ children, className, ...props }: { children: React.ReactNode; className?: string; [key: string]: any }) => {
+  const x = useMotionValue(0.5);
+  const y = useMotionValue(0.5);
+
+  const springConfig = { damping: 25, stiffness: 180, mass: 0.6 };
+  const smoothX = useSpring(x, springConfig);
+  const smoothY = useSpring(y, springConfig);
+
+  const rotateX = useTransform(smoothY, [0, 1], [8, -8]);
+  const rotateY = useTransform(smoothX, [0, 1], [-8, 8]);
+
+  const [hovered, setHovered] = useState(false);
+
+  // We can also create a nice moving highlight gradient based on smoothX and smoothY!
+  const gradientBg = useTransform(
+    [smoothX, smoothY],
+    ([currX, currY]) => `radial-gradient(circle 300px at ${Number(currX) * 100}% ${Number(currY) * 100}%, rgba(99, 102, 241, 0.08) 0%, transparent 60%)`
+  );
+
+  function handleMouseMove(event: React.MouseEvent<HTMLDivElement>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+
+    x.set(mouseX / width);
+    y.set(mouseY / height);
+  }
+
+  function handleMouseEnter() {
+    setHovered(true);
+  }
+
+  function handleMouseLeave() {
+    setHovered(false);
+    x.set(0.5);
+    y.set(0.5);
+  }
+
+  return (
+    <motion.div
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      whileHover={{ scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d",
+        perspective: 1200,
+      }}
+      className={`${className} cursor-pointer relative overflow-hidden transition-shadow duration-300 hover:shadow-xl`}
+      {...props}
+    >
+      <div style={{ transform: "translateZ(10px)", transformStyle: "preserve-3d" }} className="w-full h-full">
+        {children}
+      </div>
+
+      {/* Luxury Moving Spotlight Glow */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none z-0 rounded-[inherit] transition-opacity duration-300"
+        style={{
+          background: gradientBg,
+          opacity: hovered ? 1 : 0,
+        }}
+      />
+    </motion.div>
+  );
+};
+
 const SkillsTab = () => (
   <div>
     <div className="mb-16">
@@ -357,12 +594,12 @@ const SkillsTab = () => (
     </div>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {RESUME_DATA.skills.map((skill, i) => (
-        <motion.div
+        <TiltCard
           key={skill.category}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.1 }}
-          className="glass-card p-8 group hover:border-brand-accent transition-all hover:translate-y-[-4px] relative overflow-hidden"
+          className="glass-card p-8 group hover:border-brand-accent transition-all relative overflow-hidden"
         >
           <div className="absolute -right-4 -bottom-4 opacity-[0.05] text-brand-text group-hover:scale-110 transition-transform duration-500">
             <skill.icon size={120} />
@@ -380,7 +617,7 @@ const SkillsTab = () => (
               ))}
             </div>
           </div>
-        </motion.div>
+        </TiltCard>
       ))}
     </div>
   </div>
@@ -396,24 +633,24 @@ const ProjectsTab = () => (
         </h2>
       </div>
       <div className="flex gap-2">
-        <button className="p-3 border border-brand-border rounded-full hover:bg-slate-50 transition-colors"><ChevronRight className="rotate-180" size={20} /></button>
-        <button className="p-3 border border-brand-border rounded-full hover:bg-slate-50 transition-colors"><ChevronRight size={20} /></button>
+        <button className="p-3 border border-brand-border rounded-full hover:bg-slate-50 transition-colors"><ChevronRight className="rotate-180" size={20}/></button>
+        <button className="p-3 border border-brand-border rounded-full hover:bg-slate-50 transition-colors"><ChevronRight size={20}/></button>
       </div>
     </div>
     <div className="space-y-24">
       {RESUME_DATA.projects.map((project, i) => (
-        <motion.div
+        <motion.div 
           key={project.title}
           className={`grid grid-cols-1 lg:grid-cols-12 gap-12 items-center ${i % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}
         >
-          <div className={`lg:col-span-7 overflow-hidden rounded-3xl border border-brand-border group relative ${i % 2 === 1 ? 'lg:order-2' : ''}`}>
+          <TiltCard className={`lg:col-span-7 overflow-hidden rounded-3xl border border-brand-border glass-card shadow-lg group relative ${i % 2 === 1 ? 'lg:order-2' : ''}`}>
             <img src={project.image} alt={project.title} className="w-full h-[450px] object-cover group-hover:scale-105 transition-transform duration-700" />
             <div className="absolute inset-0 bg-brand-text/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
               <button className="px-8 py-3 bg-white text-brand-text font-mono text-xs uppercase tracking-widest flex items-center gap-2 rounded">
                 View Architecture <ExternalLink size={14} />
               </button>
             </div>
-          </div>
+          </TiltCard>
           <div className={`lg:col-span-5 ${i % 2 === 1 ? 'lg:order-1' : ''}`}>
             <div className="flex gap-2 mb-6">
               {project.tags.map(tag => <span key={tag} className="font-mono text-[10px] uppercase tracking-widest text-brand-accent">[ {tag} ]</span>)}
@@ -422,7 +659,7 @@ const ProjectsTab = () => (
             <p className="text-brand-muted text-lg leading-relaxed mb-8">{project.description}</p>
             <div className="flex items-center gap-4 py-6 border-y border-brand-border">
               <div className="flex -space-x-2">
-                {[1, 2, 3].map(u => <div key={u} className="w-8 h-8 rounded-full border-2 border-white bg-slate-200" />)}
+                {[1,2,3].map(u => <div key={u} className="w-8 h-8 rounded-full border-2 border-white bg-slate-200" />)}
               </div>
               <span className="text-xs text-brand-muted font-mono uppercase">Managed by {RESUME_DATA.name}</span>
             </div>
@@ -441,7 +678,7 @@ const ExperienceTab = () => (
         Professional Experience
       </h2>
     </div>
-
+    
     <div className="space-y-12">
       {RESUME_DATA.experience.map((exp, i) => (
         <motion.div
@@ -454,7 +691,7 @@ const ExperienceTab = () => (
           <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none">
             <Layers size={180} />
           </div>
-
+          
           <div className="flex flex-col lg:flex-row justify-between items-start gap-8 relative z-10">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
@@ -524,7 +761,7 @@ const CertificationsTab = () => (
     </div>
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {RESUME_DATA.certifications.map((cert, i) => (
-        <motion.a
+        <motion.a 
           key={cert.title}
           href={cert.link}
           target="_blank"
@@ -581,7 +818,7 @@ const ContactTab = () => (
     {/* Primary Cards */}
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
       {/* Professional Network */}
-      <a
+      <a 
         href="https://www.linkedin.com/in/akshaysimha-70b369210/"
         target="_blank"
         rel="noopener noreferrer"
@@ -603,7 +840,7 @@ const ContactTab = () => (
       </a>
 
       {/* Direct Inquiry */}
-      <a
+      <a 
         href="mailto:simhaa.31@gmail.com"
         className="glass-card p-10 bg-white border border-brand-border/30 rounded-[2rem] relative group hover:border-brand-accent transition-all block"
       >
@@ -639,11 +876,11 @@ const ContactTab = () => (
             <p className="font-mono text-sm">Q3-Q4: Limited Capacity</p>
           </div>
           <div className="space-y-3">
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5adace] block">PREFERRED TOOLS</span>
+             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5adace] block">PREFERRED TOOLS</span>
             <p className="font-mono text-sm">Slack, Discord, Zoom</p>
           </div>
           <div className="space-y-3">
-            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5adace] block">TIMEZONE</span>
+             <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#5adace] block">TIMEZONE</span>
             <p className="font-mono text-sm">Indian Standard Time (UTC+5:30)</p>
           </div>
         </div>
@@ -715,8 +952,8 @@ const AnimatedTerminal = () => {
             {line || "\u00A0"}
           </div>
         ))}
-        <motion.span
-          animate={{ opacity: [0, 1] }}
+        <motion.span 
+          animate={{ opacity: [0, 1] }} 
           transition={{ repeat: Infinity, duration: 0.8 }}
           className="inline-block w-1.5 h-3 bg-brand-accent ml-1"
         />
@@ -762,10 +999,11 @@ const AboutTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className={`p-10 rounded-2xl text-left transition-all border ${item.highlighted
-              ? "bg-brand-primary-container text-white border-transparent shadow-2xl scale-105 z-10"
-              : "bg-white text-brand-text border-brand-border/50 hover:border-brand-accent shadow-sm"
-              }`}
+            className={`p-10 rounded-2xl text-left transition-all border ${
+              item.highlighted 
+                ? "bg-brand-primary-container text-white border-transparent shadow-2xl scale-105 z-10" 
+                : "bg-white text-brand-text border-brand-border/50 hover:border-brand-accent shadow-sm"
+            }`}
           >
             <item.icon size={28} className={`mb-6 ${item.highlighted ? "text-brand-accent" : "text-brand-accent"}`} />
             <h3 className="font-display text-xl font-bold mb-4">{item.title}</h3>
@@ -783,11 +1021,11 @@ const AboutTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
         <span className="font-mono text-brand-accent text-xs tracking-[0.4em] mb-4 block">git log --oneline</span>
         <h2 className="font-display text-4xl md:text-5xl font-bold text-brand-primary tracking-tighter">Career Trajectory</h2>
       </div>
-
+      
       <div className="space-y-16 relative">
         {/* Timeline Line */}
         <div className="absolute left-[19px] lg:left-1/2 top-4 bottom-4 w-[1px] bg-brand-border/50 lg:-translate-x-1/2" />
-
+        
         {RESUME_DATA.trajectory.map((job, i) => (
           <div key={job.role} className={`relative flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10 md:gap-12 ${i % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
             {/* Dot/Icon */}
@@ -850,15 +1088,15 @@ const AboutTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
     <div className="max-w-3xl mx-auto text-center py-20">
       <h2 className="font-display text-4xl font-bold text-brand-primary mb-10 tracking-tight">Let's connect.</h2>
       <div className="flex justify-center gap-4">
-        <button
-          onClick={() => setActiveTab("Contact")}
-          className="bg-brand-primary-container text-white px-8 py-4 rounded font-mono text-xs uppercase tracking-widest hover:bg-brand-accent transition-all shadow-xl"
+        <button 
+          onClick={() => document.getElementById("Contact")?.scrollIntoView({ behavior: "smooth" })}
+          className="bg-brand-primary-container text-white px-8 py-4 rounded font-mono text-xs uppercase tracking-widest hover:bg-brand-accent transition-all shadow-xl cursor-pointer"
         >
           Contact
         </button>
-        <a
-          href="/Akshay_Simha_S_Resume.pdf" download
-          className="border border-brand-border text-brand-primary px-8 py-4 rounded font-mono text-xs uppercase tracking-widest hover:bg-slate-50 transition-all"
+        <a 
+          href="#" 
+          className="border border-brand-border text-brand-primary px-8 py-4 rounded font-mono text-xs uppercase tracking-widest hover:bg-slate-50 transition-all inline-flex items-center justify-center"
         >
           Download Resume
         </a>
@@ -871,10 +1109,100 @@ export default function App() {
   const [activeTab, setActiveTab] = useState("Home");
   const [mounted, setMounted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { scrollYProgress } = useScroll();
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const smoothScrollTo = (targetY: number, duration: number = 850) => {
+    const startY = window.scrollY;
+    const difference = targetY - startY;
+    const startTime = performance.now();
+
+    const animateScroll = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Elegant Cubic Ease-In-Out easing curve
+      const ease = progress < 0.5 
+        ? 4 * progress * progress * progress 
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+      window.scrollTo(0, startY + difference * ease);
+
+      if (progress < 1) {
+        requestAnimationFrame(animateScroll);
+      }
+    };
+
+    requestAnimationFrame(animateScroll);
+  };
+
+  const onTabClick = (tab: string) => {
+    if (["Home", "About", "Experience", "Contact"].includes(tab)) {
+      const isCurrentlyTabbed = ["Skills", "Projects", "Certifications"].includes(activeTab);
+      setActiveTab(tab);
+      
+      const performScroll = () => {
+        const el = document.getElementById(tab);
+        if (el) {
+          const yCoordinate = el.getBoundingClientRect().top + window.scrollY;
+          const yOffset = -110; // offset matches scroll-mt-32 seamlessly
+          smoothScrollTo(yCoordinate + yOffset, 900);
+        }
+      };
+
+      if (isCurrentlyTabbed) {
+        // Wait a brief tick for the single-page DOM elements to mount
+        setTimeout(performScroll, 50);
+      } else {
+        performScroll();
+      }
+    } else {
+      setActiveTab(tab);
+      smoothScrollTo(0, 850);
+    }
+  };
+
+  // Scroll-spy: update active tab as user scrolls down the page
+  useEffect(() => {
+    // Only spy on currently rendered single-page layout elements
+    const sections = ["Home", "About", "Experience", "Contact"];
+    
+    const observerOptions = {
+      root: null,
+      rootMargin: "-25% 0px -55% 0px", // Focus on focal viewport zone
+      threshold: 0.1,
+    };
+
+    const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        // Only trigger spy if the element is intersecting and we are actually in the single-page layout
+        if (entry.isIntersecting && sections.includes(activeTab)) {
+          setActiveTab(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersection, observerOptions);
+
+    sections.forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+
+    return () => {
+      sections.forEach((id) => {
+        const element = document.getElementById(id);
+        if (element) {
+          observer.unobserve(element);
+        }
+      });
+    };
+  }, [activeTab]);
 
   // Prevent scroll when mobile menu is open
   useEffect(() => {
@@ -888,52 +1216,70 @@ export default function App() {
     };
   }, [isMenuOpen]);
 
-  const renderTab = () => {
-    switch (activeTab) {
-      case "Home": return <HomeTab setActiveTab={setActiveTab} />;
-      case "About": return <AboutTab setActiveTab={setActiveTab} />;
-      case "Experience": return <ExperienceTab />;
-      case "Skills": return <SkillsTab />;
-      case "Projects": return <ProjectsTab />;
-      case "Certifications": return <CertificationsTab />;
-      case "Contact": return <ContactTab />;
-      default: return <HomeTab setActiveTab={setActiveTab} />;
-    }
-  };
-
   if (!mounted) return null;
+
+  const isMainScrollLayout = ["Home", "About", "Experience", "Contact"].includes(activeTab);
 
   return (
     <div className="min-h-screen bg-brand-bg relative overflow-x-hidden pt-32 pb-24 selection:bg-brand-accent selection:text-white">
+      {/* Scroll Progress Bar */}
+      <motion.div 
+        className="fixed top-0 left-0 right-0 h-1 bg-brand-accent z-[100] origin-left"
+        style={{ scaleX: scrollYProgress }}
+      />
+
       {/* Background Grid */}
       <div className="fixed inset-0 technical-grid opacity-30 pointer-events-none" />
-
-      <Header
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        isMenuOpen={isMenuOpen}
-        setIsMenuOpen={setIsMenuOpen}
+      
+      <Header 
+        activeTab={activeTab} 
+        onTabClick={onTabClick} 
+        isMenuOpen={isMenuOpen} 
+        setIsMenuOpen={setIsMenuOpen} 
       />
 
-      <MobileMenu
-        isOpen={isMenuOpen}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onClose={() => setIsMenuOpen(false)}
+      <MobileMenu 
+        isOpen={isMenuOpen} 
+        activeTab={activeTab} 
+        onTabClick={onTabClick} 
+        onClose={() => setIsMenuOpen(false)} 
       />
 
-      <main className="max-w-7xl mx-auto px-6 relative z-10">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            transition={{ duration: 0.35 }}
-          >
-            {renderTab()}
-          </motion.div>
-        </AnimatePresence>
+      <main className="max-w-7xl mx-auto px-6 relative z-10 pb-32">
+        {isMainScrollLayout ? (
+          <div className="space-y-48">
+            <section id="Home" className="scroll-mt-32">
+              <HomeTab setActiveTab={onTabClick} />
+            </section>
+
+            <section id="About" className="scroll-mt-32">
+              <AboutTab setActiveTab={onTabClick} />
+            </section>
+
+            <section id="Experience" className="scroll-mt-32">
+              <ExperienceTab />
+            </section>
+
+            <section id="Contact" className="scroll-mt-32">
+              <ContactTab />
+            </section>
+          </div>
+        ) : (
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.35 }}
+              className="pt-8"
+            >
+              {activeTab === "Skills" && <SkillsTab />}
+              {activeTab === "Projects" && <ProjectsTab />}
+              {activeTab === "Certifications" && <CertificationsTab />}
+            </motion.div>
+          </AnimatePresence>
+        )}
       </main>
 
       {/* Floating Meta Details (Scrollable elements might need more space) skipped as requested */}
