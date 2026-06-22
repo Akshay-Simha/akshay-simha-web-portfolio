@@ -869,6 +869,86 @@ const CertificationsTab = () => (
   </div>
 );
 
+const AnimatedProfileTerminal = () => {
+  const [visibleCount, setVisibleCount] = useState(1);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setVisibleCount(prev => {
+        if (prev >= 8) {
+          return 1;
+        }
+        return prev + 1;
+      });
+    }, 1200);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="terminal-card p-10 h-[320px] relative overflow-hidden group flex flex-col justify-start">
+      <div className="flex items-center gap-2 mb-8 flex-shrink-0">
+        <div className="w-3 h-3 rounded-full bg-red-500" />
+        <div className="w-3 h-3 rounded-full bg-yellow-500" />
+        <div className="w-3 h-3 rounded-full bg-green-500" />
+        <span className="font-mono text-[10px] text-white/40 ml-4">root@portfolio:~/profile.yaml</span>
+      </div>
+      <div className="font-mono text-sm space-y-2 flex-grow text-left">
+        {/* Line 1: engineer: */}
+        {visibleCount >= 1 && (
+          <div className="text-brand-accent">engineer:</div>
+        )}
+
+        {/* Line 2: name: "Akshay Simha S" */}
+        {visibleCount >= 2 && (
+          <div className="pl-4">
+            <span className="text-white/60">name:</span> <span className="text-[#5adace]">"{RESUME_DATA.name}"</span>
+          </div>
+        )}
+
+        {/* Line 3: role: "DevOps Engineer" */}
+        {visibleCount >= 3 && (
+          <div className="pl-4">
+            <span className="text-white/60">role:</span> <span className="text-[#5adace]">"DevOps Engineer"</span>
+          </div>
+        )}
+
+        {/* Line 4: focuses: */}
+        {visibleCount >= 4 && (
+          <div className="text-brand-accent pt-2">focuses:</div>
+        )}
+
+        {/* Focuses list (lines 5, 6, 7) */}
+        <ul className="pl-8 text-white/80 list-none space-y-1">
+          {visibleCount >= 5 && (
+            <li>- Cloud infrastructure</li>
+          )}
+          {visibleCount >= 6 && (
+            <li>- Cloud security</li>
+          )}
+          {visibleCount >= 7 && (
+            <li>- Monitoring and observability</li>
+          )}
+        </ul>
+
+        {/* Cursor/Terminal prompt */}
+        {visibleCount >= 8 && (
+          <div className="flex items-center pt-2 text-white/95">
+            <span className="text-brand-accent mr-2">$</span>
+            <motion.span
+              animate={{ opacity: [0, 1] }}
+              transition={{ repeat: Infinity, duration: 0.8 }}
+              className="inline-block w-2 h-4 bg-brand-accent"
+            />
+          </div>
+        )}
+      </div>
+      <div className="absolute top-0 right-0 p-4 opacity-[0.03] pointer-events-none">
+        <Cloud size={200} />
+      </div>
+    </div>
+  );
+};
+
 const ContactTab = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [copiedText, setCopiedText] = useState(false);
@@ -963,30 +1043,7 @@ Best regards,
 
       {/* Info Terminal Card */}
       <div className="max-w-4xl mx-auto w-full">
-        <div className="terminal-card p-10 relative overflow-hidden group">
-          <div className="flex items-center gap-2 mb-8">
-            <div className="w-3 h-3 rounded-full bg-red-500" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500" />
-            <div className="w-3 h-3 rounded-full bg-green-500" />
-            <span className="font-mono text-[10px] text-white/40 ml-4">root@portfolio:~/profile.yaml</span>
-          </div>
-          <div className="font-mono text-sm space-y-2">
-            <div className="text-brand-accent">engineer:</div>
-            <div className="pl-4">
-              <span className="text-white/60">name:</span> <span className="text-[#5adace]">"{RESUME_DATA.name}"</span>
-            </div>
-            <div className="pl-4">
-              <span className="text-white/60">role:</span> <span className="text-[#5adace]">"DevOps Engineer"</span>
-            </div>
-            <div className="text-brand-accent">focuses:</div>
-            <ul className="pl-8 text-white/80 list-none space-y-1">
-              <li>- Cloud infrastructure</li>
-              <li>- Cloud security</li>
-              <li>- Monitoring and observability</li>
-            </ul>
-          </div>
-          <Cloud size={200} className="absolute -right-20 -bottom-20 text-white opacity-[0.03] group-hover:scale-110 transition-transform" />
-        </div>
+        <AnimatedProfileTerminal />
       </div>
 
       {/* Footer CTA */}
@@ -1019,7 +1076,7 @@ Best regards,
       {/* Modals & Dialog overlays */}
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -1406,7 +1463,7 @@ export default function App() {
         onClose={() => setIsMenuOpen(false)} 
       />
 
-      <main className="max-w-7xl mx-auto px-6 relative z-10 pb-32">
+      <main className="max-w-7xl mx-auto px-6 relative pb-32">
         <div className="space-y-48">
           <section id="Home" className="scroll-mt-32">
             <HomeTab setActiveTab={onTabClick} />
@@ -1439,7 +1496,7 @@ export default function App() {
       </main>
 
       {/* Footer with copyright message */}
-      <footer className="relative z-10 border-t border-[#132237] py-6 px-6 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-[#5c7a9c] gap-3 font-mono text-[9px] uppercase tracking-widest mt-12">
+      <footer className="relative border-t border-[#132237] py-6 px-6 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-[#5c7a9c] gap-3 font-mono text-[9px] uppercase tracking-widest mt-12">
         <div>
           &copy; {new Date().getFullYear()} {RESUME_DATA.name}. All rights reserved.
         </div>
