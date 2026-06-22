@@ -35,6 +35,7 @@ import {
   MessageSquare
 } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
+import { RECYCLING_STORE_LOCATOR_IMAGE } from "./data/project_images";
 
 const RESUME_DATA = {
   name: "Akshay Simha S", 
@@ -104,10 +105,11 @@ const RESUME_DATA = {
   ],
   projects: [
     {
-      title: "Self-Healing Infrastructure",
-      description: "Automated recovery system using Terraform and Lambda to monitor EC2 health and auto-trigger remediation blocks.",
-      tags: ["Terraform", "AWS Lambda", "CloudWatch"],
-      image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc48?auto=format&fit=crop&q=80&w=1000"
+      title: "Recycling Drop-Off Store Locator",
+      description: "A sustainable recycling store locator application featuring a fully interactive GPS map, material reference guidelines, and community carbon reduction metrics tracking.",
+      tags: [],
+      image: RECYCLING_STORE_LOCATOR_IMAGE,
+      link: "https://recycling-store-locator-be37b.web.app/"
     },
     {
       title: "Global Observability Hub",
@@ -664,9 +666,9 @@ const ProjectsTab = () => (
       className="mb-12 flex justify-between items-end"
     >
       <div>
-        <motion.span variants={headingItemVariants} className="font-mono text-brand-accent text-sm tracking-widest uppercase mb-3 block">02 / Infrastructure Gallery</motion.span>
+        <motion.span variants={headingItemVariants} className="font-mono text-brand-accent text-sm tracking-widest uppercase mb-3 block">02 / PROJECTS</motion.span>
         <motion.h2 variants={headingItemVariants} className="font-display text-4xl font-bold text-brand-text tracking-tighter">
-          Infrastructure as Code & Deployment Showcase
+          Featured Projects
         </motion.h2>
       </div>
     </motion.div>
@@ -682,11 +684,17 @@ const ProjectsTab = () => (
         >
           <TiltCard className="overflow-hidden rounded-2xl border border-brand-border glass-card shadow-md group relative flex flex-col justify-between w-full hover:border-brand-accent/50 transition-colors duration-300">
             <div className="relative overflow-hidden h-[240px] w-full">
-              <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500" />
+              <img src={project.image} alt={project.title} referrerPolicy="no-referrer" className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500" />
               <div className="absolute inset-0 bg-brand-text/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm duration-300">
-                <button className="px-6 py-2 bg-brand-accent text-white font-mono text-xs uppercase tracking-widest flex items-center gap-2 rounded shadow-lg hover:bg-brand-accent/90 transition-colors">
-                  View Architecture <ExternalLink size={12} />
-                </button>
+                {project.link ? (
+                  <a href={project.link} target="_blank" rel="noopener noreferrer" className="px-6 py-2 bg-brand-accent text-white font-mono text-xs uppercase tracking-widest flex items-center gap-2 rounded shadow-lg hover:bg-brand-accent/90 transition-colors no-underline">
+                    VIEW <ExternalLink size={12} />
+                  </a>
+                ) : (
+                  <button className="px-6 py-2 bg-brand-accent text-white font-mono text-xs uppercase tracking-widest flex items-center gap-2 rounded shadow-lg hover:bg-brand-accent/90 transition-colors">
+                    View Architecture <ExternalLink size={12} />
+                  </button>
+                )}
               </div>
             </div>
             
