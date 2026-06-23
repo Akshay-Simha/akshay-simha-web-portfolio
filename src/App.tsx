@@ -56,8 +56,7 @@ const RESUME_DATA = {
     {
       title: "Security by Design",
       icon: Shield,
-      description: "Security isn't a perimeter, it's a foundational layer. DevSecOps integration ensures that protection is baked into every deployment pipeline.",
-      highlighted: true
+      description: "Security isn't a perimeter, it's a foundational layer. DevSecOps integration ensures that protection is baked into every deployment pipeline."
     },
     {
       title: "Observability",
@@ -114,7 +113,7 @@ const RESUME_DATA = {
     {
       title: "Global Observability Hub",
       description: "Centralized Prometheus/Grafana stack monitoring 100+ microservices with real-time alerting to Slack and PagerDuty.",
-      tags: ["Grafana", "Prometheus", "Service Mesh"],
+      tags: [],
       image: "https://images.unsplash.com/photo-1551288049-bbbda536ad37?auto=format&fit=crop&q=80&w=1000"
     }
   ],
@@ -477,7 +476,7 @@ const HomeTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
     </div>
 
     {/* Technical Expertise Section */}
-    <div className="pt-24 border-t border-brand-border/30">
+    <div className="pt-24">
       <div className="mb-16">
         <h2 className="font-display text-4xl font-bold text-brand-primary tracking-tight mb-4">Technical Expertise</h2>
         <p className="text-brand-muted text-lg">Standardized tools and practices for growth-oriented environments.</p>
@@ -579,6 +578,18 @@ const TiltCard = ({ children, className, ...props }: { children: React.ReactNode
     y.set(0.5);
   }
 
+  const isFlex = className?.includes("flex");
+  const isFlexCol = className?.includes("flex-col");
+  const isJustifyBetween = className?.includes("justify-between");
+
+  const innerClassName = [
+    "w-full",
+    "h-full",
+    isFlex ? "flex" : "",
+    isFlexCol ? "flex-col" : "",
+    isJustifyBetween ? "justify-between" : "",
+  ].filter(Boolean).join(" ");
+
   return (
     <motion.div
       onMouseMove={handleMouseMove}
@@ -595,7 +606,7 @@ const TiltCard = ({ children, className, ...props }: { children: React.ReactNode
       className={`${className} cursor-pointer relative overflow-hidden transition-shadow duration-300 hover:shadow-xl`}
       {...props}
     >
-      <div style={{ transform: "translateZ(10px)", transformStyle: "preserve-3d" }} className="w-full h-full">
+      <div style={{ transform: "translateZ(10px)", transformStyle: "preserve-3d" }} className={innerClassName}>
         {children}
       </div>
 
@@ -680,9 +691,9 @@ const ProjectsTab = () => (
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.5 }}
-          className="flex"
+          className="flex w-full"
         >
-          <TiltCard className="overflow-hidden rounded-2xl border border-brand-border glass-card shadow-md group relative flex flex-col justify-between w-full hover:border-brand-accent/50 transition-colors duration-300">
+          <TiltCard className="overflow-hidden rounded-2xl border border-brand-border glass-card shadow-md group relative flex flex-col justify-between w-full h-full hover:border-brand-accent/50 transition-colors duration-300">
             <div className="relative overflow-hidden h-[240px] w-full">
               <img src={project.image} alt={project.title} referrerPolicy="no-referrer" className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500" />
               <div className="absolute inset-0 bg-brand-text/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm duration-300">
@@ -711,7 +722,7 @@ const ProjectsTab = () => (
                 <p className="text-brand-muted text-sm leading-relaxed mb-6">{project.description}</p>
               </div>
               
-              <div className="flex items-center gap-3 pt-4 border-t border-brand-border/20 text-xs text-brand-muted font-mono uppercase">
+              <div className="flex items-center gap-3 pt-4 border-t border-brand-border/60 text-xs text-brand-muted font-mono uppercase">
                 <div className="flex -space-x-1.5">
                   {[1,2].map(u => <div key={u} className="w-5 h-5 rounded-full border border-white bg-slate-200" />)}
                 </div>
@@ -1261,7 +1272,7 @@ const AboutTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
           Bridging the gap between <span className="text-[#2B6CB0]">Code</span> and <span className="text-[#2B6CB0]">Stability.</span>
         </motion.h2>
       </motion.div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-16 border-t border-brand-border/30 pt-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-16 pt-12">
         <div className="space-y-6">
           <div className="flex items-center gap-3 text-brand-accent">
             <Settings size={18} />
@@ -1294,15 +1305,11 @@ const AboutTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className={`p-10 rounded-2xl text-left transition-all border ${
-              item.highlighted 
-                ? "bg-brand-primary-container text-white border-transparent shadow-2xl scale-105 z-10" 
-                : "bg-white text-brand-text border-brand-border/50 hover:border-brand-accent shadow-sm"
-            }`}
+            className="p-10 rounded-2xl text-left transition-all duration-300 border bg-white text-brand-text border-brand-border/50 shadow-sm hover:bg-brand-primary-container hover:border-transparent hover:shadow-2xl hover:scale-[1.03] hover:z-10 group"
           >
-            <item.icon size={28} className={`mb-6 ${item.highlighted ? "text-brand-accent" : "text-brand-accent"}`} />
-            <h3 className="font-display text-xl font-bold mb-4">{item.title}</h3>
-            <p className={`text-sm leading-relaxed ${item.highlighted ? "text-white/80" : "text-brand-muted"}`}>
+            <item.icon size={28} className="mb-6 text-brand-accent transition-colors duration-300 group-hover:text-white" />
+            <h3 className="font-display text-xl font-bold mb-4 text-brand-primary transition-colors duration-300 group-hover:text-white">{item.title}</h3>
+            <p className="text-sm leading-relaxed text-brand-muted transition-colors duration-300 group-hover:text-white/80">
               {item.description}
             </p>
           </motion.div>
@@ -1447,7 +1454,7 @@ export default function App() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-brand-bg relative overflow-x-hidden pt-32 pb-24 selection:bg-brand-accent selection:text-white">
+    <div className="min-h-screen bg-brand-bg relative overflow-x-hidden pt-32 selection:bg-brand-accent selection:text-white">
       {/* Scroll Progress Bar */}
       <motion.div 
         className="fixed top-0 left-0 right-0 h-1 bg-brand-accent z-[100] origin-left"
@@ -1504,14 +1511,28 @@ export default function App() {
       </main>
 
       {/* Footer with copyright message */}
-      <footer className="relative border-t border-[#132237] py-6 px-6 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-[#5c7a9c] gap-3 font-mono text-[9px] uppercase tracking-widest mt-12">
-        <div>
-          &copy; {new Date().getFullYear()} {RESUME_DATA.name}. All rights reserved.
-        </div>
-        <div className="flex gap-4 items-center">
-          <a href="#Home" onClick={(e) => { e.preventDefault(); onTabClick("Home"); }} className="hover:text-brand-accent transition-colors duration-200 cursor-pointer">Back to Top</a>
-          <span className="text-brand-border/30">&middot;</span>
-          <span>Designed with Precision</span>
+      <footer className="w-full border-t border-brand-primary-container/30 bg-brand-primary text-white/60 py-8 mt-16 relative z-10">
+        <div className="w-full px-6 md:px-16 flex flex-col md:flex-row justify-between items-center gap-4 font-mono text-[11px] uppercase tracking-[0.2em]">
+          {/* Left */}
+          <div className="text-center md:text-left text-white/40 md:w-1/3">
+            Designed with Precision
+          </div>
+          
+          {/* Center */}
+          <div className="text-center font-medium whitespace-nowrap md:w-1/3">
+            &copy; {new Date().getFullYear()} {RESUME_DATA.name}. All Rights Reserved.
+          </div>
+          
+          {/* Right */}
+          <div className="text-center md:text-right md:w-1/3">
+            <a 
+              href="#Home" 
+              onClick={(e) => { e.preventDefault(); onTabClick("Home"); }} 
+              className="text-white hover:text-brand-accent transition-colors duration-200 cursor-pointer"
+            >
+              Back to Top
+            </a>
+          </div>
         </div>
       </footer>
     </div>
