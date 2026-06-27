@@ -32,7 +32,8 @@ import {
   X,
   Copy,
   Check,
-  MessageSquare
+  MessageSquare,
+  Download
 } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
 import { RECYCLING_STORE_LOCATOR_IMAGE } from "./data/project_images";
@@ -431,18 +432,17 @@ const HomeTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
         </p>
         
         <div className="flex flex-wrap gap-4 pt-4">
-          <button 
-            onClick={() => document.getElementById("About")?.scrollIntoView({ behavior: "smooth" })}
-            className="bg-brand-primary-container text-white px-8 py-3 rounded shadow-sm hover:bg-brand-accent transition-all duration-300 font-mono text-[11px] uppercase tracking-wider flex items-center gap-2 group cursor-pointer"
+          <a 
+            href="#"
+            className="bg-brand-primary text-white px-9 py-3.5 rounded-lg shadow-md hover:bg-brand-accent transition-all duration-300 font-mono text-[11px] font-bold uppercase tracking-[0.2em] flex items-center justify-center cursor-pointer"
           >
-            <span>About</span>
-            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-          </button>
+            DOWNLOAD RESUME
+          </a>
           <button 
-            onClick={() => document.getElementById("Contact")?.scrollIntoView({ behavior: "smooth" })}
-            className="border border-brand-border text-brand-muted px-8 py-3 rounded font-mono text-[11px] uppercase tracking-wider hover:bg-slate-50 transition-all duration-300 cursor-pointer"
+            onClick={() => setActiveTab("Contact")}
+            className="bg-transparent border-2 border-brand-primary text-brand-primary px-9 py-3.5 rounded-lg font-mono text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-brand-primary hover:text-white transition-all duration-300 cursor-pointer"
           >
-            Connect
+            LET'S TALK
           </button>
         </div>
       </div>
@@ -1049,7 +1049,7 @@ Best regards,
               </div>
               <ArrowUpRight size={20} className="text-brand-muted group-hover:text-brand-accent transition-colors" />
             </div>
-            <h3 className="font-display text-2xl font-bold text-brand-primary mb-4">Gmail</h3>
+            <h3 className="font-display text-2xl font-bold text-brand-primary mb-4">Email</h3>
             <p className="text-brand-muted mb-8 leading-relaxed">
               Reach out directly for project collaborations, technical consultations, or professional inquiries. I typically respond to architectural proposals within 24 hours.
             </p>
@@ -1317,52 +1317,7 @@ const AboutTab = ({ setActiveTab }: { setActiveTab: (t: string) => void }) => (
       </div>
     </div>
 
-    {/* Career Trajectory (Timeline Style) */}
-    <div className="max-w-5xl mx-auto bg-[#F8F9FD] py-16 md:py-24 px-6 md:px-12 rounded-[2rem] md:rounded-[3rem] border border-brand-border/30">
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        variants={headingContainerVariants}
-        className="mb-12 md:mb-16"
-      >
-        <motion.span variants={headingItemVariants} className="font-mono text-brand-accent text-xs tracking-[0.4em] mb-4 block">git log --oneline</motion.span>
-        <motion.h2 variants={headingItemVariants} className="font-display text-4xl md:text-5xl font-bold text-brand-primary tracking-tighter">Career Trajectory</motion.h2>
-      </motion.div>
-      
-      <div className="space-y-16 relative">
-        {/* Timeline Line */}
-        <div className="absolute left-[19px] lg:left-1/2 top-4 bottom-4 w-[1px] bg-brand-border/50 lg:-translate-x-1/2" />
-        
-        {RESUME_DATA.trajectory.map((job, i) => (
-          <div key={job.role} className={`relative flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10 md:gap-12 ${i % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
-            {/* Dot/Icon */}
-            <div className="absolute left-0 lg:left-1/2 -translate-x-0 lg:-translate-x-1/2 w-10 h-10 bg-[#1a365d] border-2 border-brand-accent rounded-xl z-20 flex items-center justify-center shadow-lg">
-              <job.icon size={18} className="text-white" />
-            </div>
 
-            {/* Content Side 1: Header/Info */}
-            <div className={`w-full lg:w-[46%] pl-14 lg:pl-0 ${i % 2 === 0 ? 'lg:text-right lg:pr-8' : 'lg:text-left lg:pl-8'}`}>
-              <div className="mb-1">
-                <span className="font-mono text-[10px] text-brand-accent uppercase tracking-widest font-bold">{job.period}</span>
-                <h3 className="font-display text-2xl md:text-3xl font-bold text-brand-primary mt-1">{job.role}</h3>
-                {job.roleDetail && (
-                  <p className="font-mono text-[11px] text-brand-accent mt-1">{job.roleDetail}</p>
-                )}
-                <p className="font-display text-lg text-brand-muted mt-1">{job.company}</p>
-              </div>
-            </div>
-
-            {/* Content Side 2: Description */}
-            <div className={`w-full lg:w-[46%] pl-14 lg:pl-0 ${i % 2 === 0 ? 'lg:text-left lg:pl-8' : 'lg:text-right lg:pr-8'}`}>
-              <p className="text-brand-muted text-sm md:text-base leading-relaxed">
-                {job.desc}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
 
   </div>
 );
